@@ -1,1 +1,5 @@
 Error: [8192] mysqli::query(): Passing null to parameter #1 ($query) of type string is deprecated - C:\Users\andyc\OneDrive - unige.it\Università\Sviluppo di Applicazioni Web\progetti\_devSAW\_V1\backend\show_posts.php:36
+Error: [2] Undefined array key "data" - C:\Users\andyc\OneDrive - unige.it\Università\Sviluppo di Applicazioni Web\progetti\_devSAW\_V1\backend\auth.php:108
+Error: [2] Trying to access array offset on value of type null - C:\Users\andyc\OneDrive - unige.it\Università\Sviluppo di Applicazioni Web\progetti\_devSAW\_V1\backend\auth.php:109
+Error: [2] Undefined array key "data" - C:\Users\andyc\OneDrive - unige.it\Università\Sviluppo di Applicazioni Web\progetti\_devSAW\_V1\backend\auth.php:108
+Error: [2] Trying to access array offset on value of type null - C:\Users\andyc\OneDrive - unige.it\Università\Sviluppo di Applicazioni Web\progetti\_devSAW\_V1\backend\auth.php:109

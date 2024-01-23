@@ -46,23 +46,19 @@ try{
 
     $token = generateToken([
         'expireDate' => $expire,
-        'firstname' => $row['Firstname'],
+        'Firstname' => $row['Firstname'],
         'Lastname' => $row['Lastname'],
         'Email' => $row['Email']
     ]);
-    // TODO: aggiungere setcookie()
+
     setcookie('Token', $token, $expire, '/');
     //</editor-fold>
 
-    //<editor-fold desc="SESSION">
-    // TODO: togliere sessioni e DB. Sono ridondanti. Usare solo JWT
-    //session_start();
-    //$_SESSION['Token'] = $token;
+    //<editor-fold desc="COOKIE DB">
+    //$stmt = $db->prepare("UPDATE users SET Token='$token', ExpirationDate='$expire' WHERE Email=?");
+    //$stmt->bind_param('s', $email);
+    //$stmt->execute();
     //</editor-fold>
-
-    $stmt = $db->prepare("UPDATE users SET Token='$token', ExpirationDate='$expire' WHERE Email=?");
-    $stmt->bind_param('s', $email);
-    $stmt->execute();
 
     echo json_encode(array(
         'success'   => true,

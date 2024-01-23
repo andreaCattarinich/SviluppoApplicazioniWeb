@@ -60,6 +60,14 @@ function getTokenData($token)
 
 /******** CONTROLLO AUTORIZZAZIONE CON TOKEN JWT *******/
 function authorization(){
+    $token = getTokenFromServer();
+    if(checkIfValid($token))
+        return $token;
+    else
+        JSONResponse(401, 'Unauthorized');
+}
+
+function getTokenFromServer(){
     if(isset($_COOKIE['Token'])){
         return $_COOKIE['Token'];
     }else {
@@ -78,4 +86,24 @@ function authorization(){
         }
         return $token;
     }
+}
+
+function checkIfValid($token){
+    list(, $base64UrlPayload, ) = explode('.', $token);
+    $payload = base64UrlDecode($base64UrlPayload);
+    $UrlPayload = json_decode($payload, true);
+    return $UrlPayload['expireDate'] > time();
+}
+function base64UrlDecode($data)
+{
+    $base64 = strtr($data, '-_', '+/');
+    $base64Padded = str_pad($base64, strlen($base64) % 4, '=', STR_PAD_RIGHT);
+    return base64_decode($base64Padded);
+}
+
+function getEmailFromToken($token){
+    list(, $base64UrlPayload, ) = explode('.', $token);
+    $payload = base64UrlDecode($base64UrlPayload);
+    $UrlPayload = json_decode($payload, true);
+    return $UrlPayload['Email'];
 }
