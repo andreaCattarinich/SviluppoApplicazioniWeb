@@ -14,68 +14,107 @@ function main(){
 
 function loadAnotherPage(event) {
   if (event.target.classList.contains('page-link')) {
-      let page = event.target.innerText;
-      loadPage(page);
-      // loadPagination(page);
+    // Verifica se il testo del nodo figlio è "Next"
+    let newPage;
+    let pressed = event.target.childNodes[0].textContent;
+    if (pressed === 'Next') {
+      let active = document.getElementsByClassName('active');
+      newPage = parseInt(active[0].childNodes[0].textContent) + 1;
+    }else if(pressed === 'Previous'){
+      let active = document.getElementsByClassName('active');
+      newPage = parseInt(active[0].childNodes[0].textContent) - 1;
+    }else{
+      newPage = parseInt(event.target.innerText);
+    }
+    loadPage(newPage);
   }
 }
 
-async function loadPage(page){
-  let data = await myFetch('../backend/show_posts2.php', '0', 'POST');
 
-  if(data.success){
+async function loadPage(page){
+  // TODO: fare una funzione di questo codice dei Token
+  let token = localStorage.getItem('auth-token');
+  if(!token)
+    window.location.href = 'signin.html';
+
+  let response = await fetch(`../backend/show_posts.php?page=${page}`, {
+    headers: {
+      Authentication: `Bearer ${token}`,
+    }
+  });
+
+  if (response.status !== 200) {
+    localStorage.removeItem('auth-token');
+    window.location.href = 'signin.html';
+  }
+
+  let json = await response.json();
+  console.log(json);
+
+  if(json.success){
     let posts = document.getElementById("posts");
     posts.innerHTML = '';
 
-    for (let i = 0; i < data.num_posts; i++) {
+    for (let i = 0; i < json.posts.length; i++) {
       let postDiv = document.createElement("div");
-      postDiv.innerHTML = data[i].post;
+      postDiv.innerHTML = json.posts[i].Post;
       posts.appendChild(postDiv);
     }
   }
-  loadPagination(page);
+  loadPagination(page, json.num_pagination);
 }
 
-async function loadPagination(page){
-  let formData = new FormData();
-  formData.append("currPage", page);
-
-  let data = await myFetch('../backend/get_pagination.php', formData, 'POST');
-  if(data.success){
-    console.log(data);
+function loadPagination(currentPage, numPagination){
     let pagination = document.getElementById('pagination');
     pagination.innerHTML = '';
-  
-    for(let i=1; i<= data.pagination_numbers; i++){
+
+    //<editor-fold desc="PREVIOUS">
+    let li = document.createElement('li');
+    li.classList.add("page-item");
+    currentPage === 1 ? li.classList.add('disabled') : null;
+    let a = document.createElement('a');
+    a.classList.add("page-link");
+    a.textContent = "Previous";
+    a.href = "#";
+    li.appendChild(a);
+    pagination.appendChild(li);
+    //</editor-fold>
+
+    // ADD NUMBERS BEETWEN Previous ( ) Next
+    for(let i=1; i<= numPagination; i++){
       let li = document.createElement('li');
       li.classList.add("page-item");
 
-
-      if(data.currPage == i){
+      if(currentPage === i){
         li.classList.add("active");
         li.ariaCurrent = "page";
         let span = document.createElement('span');
         span.classList.add("page-link");
-        span.textContent = i;
+        span.textContent = i.toString();
+
         li.appendChild(span);
         pagination.appendChild(li);
       }else{
         let a = document.createElement('a');
         a.classList.add("page-link");
-        a.textContent = i;
+        a.textContent = i.toString();
         a.href = "#";
-        
         li.appendChild(a);
         pagination.appendChild(li);
-  
       }
-      // <li class="page-item active" aria-current="page">
-      // <span class="page-link">2</span>
-      // </li>
-
     }
 
-  }
+    //<editor-fold desc="NEXT">
+    li = document.createElement('li');
+    li.classList.add("page-item");
+  currentPage === numPagination ? li.classList.add('disabled') : null;
+    a = document.createElement('a');
+    a.classList.add("page-link");
+    a.textContent = "Next";
+    a.href = "#";
+    li.appendChild(a);
+    pagination.appendChild(li);
+    //</editor-fold>
 }
 
 async function addPost(event){
@@ -83,29 +122,23 @@ async function addPost(event){
 
   let content = tinymce.get("myTextarea").getContent({format: 'html'});
   if(content){
-    const token = getCookie('rememberMe');
-    const cookieRememberMe = new FormData();
-    cookieRememberMe.append("Token", token);
-  
-    let data = await myFetch('../backend/show_profile.php', cookieRememberMe, 'POST');
-  
-    if(!data.success){
-      window.location.href = 'blog.html';
-    }
-
-    let fullname = data.firstname + " " + data.lastname;
-    // console.log(fullname);
+    // let fullname = data.firstname + " " + data.lastname; // TODO: get data from JWT
+    let fullname = 'Full name';
+    let email = 'email@test.it';
     let HTMLPost = createStandardPost(content, fullname);
 
     let formData = new FormData();
-    formData.append('Email', data.email);
-    formData.append('Post', HTMLPost.outerHTML);
-    formData.append('Date', Date.now());
-  
-    data = await myFetch('../backend/add_post.php', formData, 'POST');
-    // console.log(data);
+    formData.append('email', email);
+    formData.append('post', HTMLPost.outerHTML);
+    formData.append('date', Date.now()); // TODO: controllare la validità della data (oppure farlo lato backend)
+
+    // TODO: aggiungere anche l'header Authentication
+    let data = await myFetch('../backend/add_post.php', formData, 'POST');
+    //
+
     if(data.success){
-      console.log(data);
+      // Return with ?success=true
+
       window.location.href = "blog.html";
     }else{
       console.log(data);

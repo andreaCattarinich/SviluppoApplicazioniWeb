@@ -1,5 +1,4 @@
 <?php
-session_start();
 require 'functions.php';
 require 'database.php';
 include 'error_reporting.php';
@@ -7,18 +6,18 @@ require  'auth.php';
 
 /* TODO: controllare se serve o no!
 * Se lo tolgo e accedo a /backend/show_profile.php
-* Vedo il json {"success" ... }
-*
-* if($_SERVER["REQUEST_METHOD"] !== 'POST'){
-*   die('Permission denied');
-* }
 */
+
+if($_SERVER["REQUEST_METHOD"] !== 'GET'){
+    JSONResponse(405, 'Method Not Allowed');
+}
 
 if($token = authorization()) {
     try {
+        // TODO: togliere connessione al DB e fare tutto con JWT
         $db = db_connect();
         $currentTime = time();
-        //$token = $_COOKIE['rememberMe'] ?? 0;
+
         //$result = $db->query("SELECT * FROM users WHERE Email='{$_POST['Email']}' OR Token=$token AND ExpirationDate > $currentTime");
         $result = $db->query("SELECT * FROM users WHERE Token='$token' AND ExpirationDate > $currentTime");
         if ($result->num_rows == 1) {
@@ -34,8 +33,8 @@ if($token = authorization()) {
             http_response_code(200);
             exit;
         }
-        ErrorResponse(500, 'Internal Server Error');
+        JSONResponse(500, 'Internal Server Error');
     } catch (mysqli_sql_exception $e) {
-        ErrorResponse(500, $e->getMessage());
+        JSONResponse(500, $e->getMessage());
     }
 }

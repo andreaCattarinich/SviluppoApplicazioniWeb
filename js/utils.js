@@ -25,31 +25,22 @@ export function showError(code, error){
   
   subtitle.innerHTML = "Please retry";
 }
-/*
-export function getCookie(cname) {
-  let name = cname + "=";
-  let decodedCookie = decodeURIComponent(document.cookie);
-  let ca = decodedCookie.split(';');
-  for(let i = 0; i <ca.length; i++) {
-    let c = ca[i];
-    while (c.charAt(0) == ' ') {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return "";
-}
-*/
 
 export function getCurrentData(){
   const currentDate = new Date();
   const year = currentDate.getFullYear();
-  const month = currentDate.getMonth() + 1;
-  const day = currentDate.getDate();
-  const hours = currentDate.getHours();
+  const month = (currentDate.getMonth() < 10 ? '0' : '') + currentDate.getMonth() + 1;
+  const day = (currentDate.getDate() < 10 ? '0' : '') + currentDate.getDate();
+  const hours = (currentDate.getHours() < 10 ? '0' : '') + currentDate.getHours();
   const minutes = (currentDate.getMinutes() < 10 ? '0' : '') + currentDate.getMinutes();
+
+  // TODO cancellare
+  // const currentDate = new Date();
+  // const year = currentDate.getFullYear();
+  // const month = currentDate.getMonth() + 1;
+  // const day = currentDate.getDate();
+  // const hours = currentDate.getHours();
+  // const minutes = (currentDate.getMinutes() < 10 ? '0' : '') + currentDate.getMinutes();
   
   return `${day}/${month}/${year} - ${hours}:${minutes}`;
 }
@@ -62,10 +53,7 @@ export async function myFetch(url, input, type){
       body: input,
     });
 
-    let data = await response.json();
-
-    return data;
-
+    return await response.json();
   } catch (error){
     console.log('Errore: ', error);
   }

@@ -2,10 +2,10 @@
 require 'functions.php';
 require 'database.php';
 include 'error_reporting.php';
-include 'auth.php';
+require 'auth.php';
 
-if($_SERVER["REQUEST_METHOD"] !== 'POST' || empty($_POST)){
-  ErrorResponse(405, 'Method Not Allowed');
+if($_SERVER["REQUEST_METHOD"] !== 'POST'){
+  JSONResponse(405, 'Method Not Allowed');
 }
 
 $fields = array(
@@ -15,11 +15,11 @@ $fields = array(
 
 foreach ($fields as $name) {
     if (empty($_POST[$name]))
-        ErrorResponse(400, 'Bad Request');
+        JSONResponse(400, 'Bad Request');
 }
 
 if(!validateEmail($_POST['email']) || !validatePassword($_POST['pass'])){
-    ErrorResponse(400, 'Invalid Parameters');
+    JSONResponse(400, 'Invalid Parameters');
 }
 
 $email = strtolower(validateInput($_POST['email']));
@@ -33,34 +33,34 @@ try{
 
     $result = $stmt->get_result();
     if($result->num_rows == 0)
-        ErrorResponse(404, 'Email not found');
-    else if($result->num_rows != 1)
-        ErrorResponse(500, 'Internal Server Error');
+        JSONResponse(404, 'Email not found');
 
     $row = $result->fetch_assoc();
     if(!password_verify($password, $row['Password']))
-        ErrorResponse(401, 'Unauthorized');
+        JSONResponse(401, 'Unauthorized');
 
     //<editor-fold desc="COOKIE">              // REMEMBERME   | SESSION
-    $validTime = (isset($_POST['rememberMe']) && $_POST['rememberMe'] == 'true')
-        ? time () + 180
-        : time() + 10;
+    $expire = (isset($_POST['rememberMe']) && $_POST['rememberMe'] == 'true')
+        ? time () + 300
+        : time() + 60;
 
     $token = generateToken([
-        //'sub' => 1,
-        'expireDate' => $validTime,
+        'expireDate' => $expire,
         'firstname' => $row['Firstname'],
         'Lastname' => $row['Lastname'],
         'Email' => $row['Email']
     ]);
+    // TODO: aggiungere setcookie()
+    setcookie('Token', $token, $expire, '/');
     //</editor-fold>
 
     //<editor-fold desc="SESSION">
-    session_start();
-    $_SESSION['Token'] = $token;
+    // TODO: togliere sessioni e DB. Sono ridondanti. Usare solo JWT
+    //session_start();
+    //$_SESSION['Token'] = $token;
     //</editor-fold>
 
-    $stmt = $db->prepare("UPDATE users SET Token='$token', ExpirationDate='$validTime' WHERE Email=?");
+    $stmt = $db->prepare("UPDATE users SET Token='$token', ExpirationDate='$expire' WHERE Email=?");
     $stmt->bind_param('s', $email);
     $stmt->execute();
 
@@ -78,5 +78,5 @@ try{
     http_response_code(200);
     exit;
 }catch (mysqli_sql_exception $e){
-    ErrorResponse(500, $e->getMessage());
+    JSONResponse(500, $e->getMessage());
 }

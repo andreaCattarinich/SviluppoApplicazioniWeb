@@ -8,7 +8,6 @@ async function login(event){
   event.preventDefault();
 
   let credentials = getDataFromForm(loginForm);
-  // console.log(...credentials);
 
   let data = await myFetch('../backend/login.php', credentials, 'POST');
 

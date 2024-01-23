@@ -60,21 +60,21 @@ function getTokenData($token)
 
 /******** CONTROLLO AUTORIZZAZIONE CON TOKEN JWT *******/
 function authorization(){
-    if(isset($_SESSION['Token'])){
-        return $_SESSION['Token'];
+    if(isset($_COOKIE['Token'])){
+        return $_COOKIE['Token'];
     }else {
         if (!isset($_SERVER['HTTP_AUTHENTICATION'])) {
-            ErrorResponse(401, 'Unauthorized');
+            JSONResponse(401, 'Unauthorized');
         }
 
         $tokenParts = explode(' ', $_SERVER['HTTP_AUTHENTICATION']);
         if (sizeof($tokenParts) != 2) {
-            ErrorResponse(401, 'Unauthorized');
+            JSONResponse(401, 'Unauthorized');
         }
         $token = $tokenParts[1];
 
         if (!validateToken($token)) {
-            ErrorResponse(401, 'Unauthorized');
+            JSONResponse(401, 'Unauthorized');
         }
         return $token;
     }

@@ -33,22 +33,15 @@ function validateInput($data): string{
     return htmlspecialchars($data);
 }
 
-#[NoReturn] function ErrorResponse($code, $message): void{
+#[NoReturn]
+function JSONResponse($code, $message): void{
   http_response_code($code);
+  $success = $code >= 200 && $code <= 299;
   echo json_encode(array(
-    'success' => false,
-    'code' => $code,
-    'error' => $message
-  ));
-  exit;
-}
-
-#[NoReturn] function SuccessResponse($code, $message): void{
-  http_response_code($code);
-  echo json_encode(array(
-    'success' => true,
-    'code' => $code,
-    'message' => $message
+      'success' => $success,
+      'code'    => $code,
+      'message' => $success ? $message : null,
+      'error'   => !$success ? $message : null,
   ));
   exit;
 }

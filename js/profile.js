@@ -38,7 +38,7 @@ async function clickButton(event){
     if(button.textContent === 'Edit profile'){
       loadEditMode();
     }else if(button.textContent === 'Update'){
-      updateData();
+      await updateData();
     }else if(button.textContent === 'Cancel'){
       loadLandingPage();
     }
@@ -90,7 +90,6 @@ function loadLandingPage(){
   let cancelButton = document.getElementById("cancel-button");
   cancelButton.id = "edit-button";
   cancelButton.textContent = 'Edit profile';
-
 }
 
 async function updateData(){
@@ -115,6 +114,8 @@ async function updateData(){
     updateError.classList.remove("d-none", "alert-warning");
     updateError.classList.add("alert-success");
     updateError.textContent = data.message;
+  }else if(data.code === 401){
+    window.location.href = "signin.html";
   }else{
     let updateError = document.getElementById("update-error");
     updateError.classList.remove("d-none", "alert-success");

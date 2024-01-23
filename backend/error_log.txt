@@ -1,0 +1,1 @@
+Error: [8192] mysqli::query(): Passing null to parameter #1 ($query) of type string is deprecated - C:\Users\andyc\OneDrive - unige.it\Università\Sviluppo di Applicazioni Web\progetti\_devSAW\_V1\backend\show_posts.php:36
