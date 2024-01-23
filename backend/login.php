@@ -3,6 +3,7 @@ require 'functions.php';
 require 'database.php';
 include 'error_reporting.php';
 require 'auth.php';
+global $jwtManager;
 
 if($_SERVER["REQUEST_METHOD"] !== 'POST'){
   JSONResponse(405, 'Method Not Allowed');
@@ -39,12 +40,12 @@ try{
     if(!password_verify($password, $row['Password']))
         JSONResponse(401, 'Unauthorized');
 
-    //<editor-fold desc="COOKIE">              // REMEMBERME   | SESSION
+    //<editor-fold desc="COOKIE>
     $expire = (isset($_POST['rememberMe']) && $_POST['rememberMe'] == 'true')
         ? time () + 300
         : time() + 60;
 
-    $token = generateToken([
+    $token = $jwtManager->createToken([
         'expireDate' => $expire,
         'Firstname' => $row['Firstname'],
         'Lastname' => $row['Lastname'],
@@ -52,12 +53,6 @@ try{
     ]);
 
     setcookie('Token', $token, $expire, '/');
-    //</editor-fold>
-
-    //<editor-fold desc="COOKIE DB">
-    //$stmt = $db->prepare("UPDATE users SET Token='$token', ExpirationDate='$expire' WHERE Email=?");
-    //$stmt->bind_param('s', $email);
-    //$stmt->execute();
     //</editor-fold>
 
     echo json_encode(array(

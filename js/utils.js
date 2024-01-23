@@ -46,15 +46,39 @@ export function getCurrentData(){
 }
 
 /******* AJAX *******/
-export async function myFetch(url, input, type){
+export async function myFetch(url, input, method){
   try{
-    let response = await fetch(url, {
-      method: type,
-      body: input,
-    });
+    let token = getTokenFromLocalStorage();
+    let requestConfig = {
+      method: method,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    // AGGIUNGO IL BODY SE E' UN POST
+    if (method === 'POST') {
+      requestConfig.body = input;
+    }
+
+    let response = await fetch(url, requestConfig);
+
+    if (response.status !== 200) {
+      localStorage.removeItem('auth-token');
+      window.location.href = 'signin.html';
+    }
 
     return await response.json();
   } catch (error){
     console.log('Errore: ', error);
   }
+}
+
+export function getTokenFromLocalStorage(){
+  let token = localStorage.getItem('auth-token');
+  // TODO: controllare...
+  if(!token){
+    // window.location.href = 'signin.html';
+    console.log('Token non trovato.');
+  }
+  return token;
 }

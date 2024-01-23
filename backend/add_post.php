@@ -4,16 +4,13 @@ require 'functions.php';
 require 'database.php';
 include 'error_reporting.php';
 require  'auth.php';
+global $jwtManager;
 
 if($_SERVER['REQUEST_METHOD'] !== 'POST'){
     JSONResponse(405, 'Method Not Allowed');
 }
 if($token = authorization()){
-    $fields = array(
-        'email',
-        'post',
-        'date'
-    );
+    $fields = array('post');
 
     foreach ($fields as $name) {
         if (empty($_POST[$name]))
@@ -25,8 +22,7 @@ if($token = authorization()){
         JSONResponse(400, 'Invalid Parameters');
     }
 
-    // TODO: forse è meglio prenderlo dal JWT?
-    $email = strtolower(validateInput($_POST['email']));
+    $email = $jwtManager->getEmailFromToken($token);
 
     try{
         $db = db_connect();

@@ -30,38 +30,23 @@ function loadAnotherPage(event) {
   }
 }
 
-
 async function loadPage(page){
-  // TODO: fare una funzione di questo codice dei Token
-  let token = localStorage.getItem('auth-token');
-  if(!token)
-    window.location.href = 'signin.html';
+  let data = await  myFetch(`../backend/show_posts.php?page=${page}`, null, 'GET');
 
-  let response = await fetch(`../backend/show_posts.php?page=${page}`, {
-    headers: {
-      Authentication: `Bearer ${token}`,
-    }
-  });
-
-  if (response.status !== 200) {
-    localStorage.removeItem('auth-token');
-    window.location.href = 'signin.html';
-  }
-
-  let json = await response.json();
-  console.log(json);
-
-  if(json.success){
+  console.log(data);
+  if(data.success){
     let posts = document.getElementById("posts");
     posts.innerHTML = '';
 
-    for (let i = 0; i < json.posts.length; i++) {
+    for (let i = 0; i < data.posts.length; i++) {
       let postDiv = document.createElement("div");
-      postDiv.innerHTML = json.posts[i].Post;
+      postDiv.innerHTML = data.posts[i].Post;
       posts.appendChild(postDiv);
     }
+    loadPagination(page, data.num_pagination);
+  }else{
+    window.location.href = 'signin.html';
   }
-  loadPagination(page, json.num_pagination);
 }
 
 function loadPagination(currentPage, numPagination){
@@ -122,19 +107,12 @@ async function addPost(event){
 
   let content = tinymce.get("myTextarea").getContent({format: 'html'});
   if(content){
-    // let fullname = data.firstname + " " + data.lastname; // TODO: get data from JWT
-    let fullname = 'Full name';
-    let email = 'email@test.it';
-    let HTMLPost = createStandardPost(content, fullname);
+    let HTMLPost = createStandardPost(content, 'StandardName');
 
     let formData = new FormData();
-    formData.append('email', email);
     formData.append('post', HTMLPost.outerHTML);
-    formData.append('date', Date.now()); // TODO: controllare la validità della data (oppure farlo lato backend)
 
-    // TODO: aggiungere anche l'header Authentication
     let data = await myFetch('../backend/add_post.php', formData, 'POST');
-    //
 
     if(data.success){
       // Return with ?success=true

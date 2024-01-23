@@ -7,24 +7,8 @@ document.addEventListener('click', clickButton);
 
 async function showProfile(event){
   event.preventDefault();
+  let data = await myFetch('../backend/show_profile.php', null, 'GET');
 
-  let token = localStorage.getItem('auth-token');
-  if(!token){
-    window.location.href = 'signin.html';
-  }
-
-  let response = await fetch('../backend/show_profile.php', {
-    headers: {
-      Authentication: `Bearer ${token}`,
-    }
-  });
-
-  if (response.status !== 200) {
-    localStorage.removeItem('auth-token');
-    window.location.href = 'signin.html';
-  }
-
-  let data = await response.json();
   firstname = data.firstname;
   lastname = data.lastname;
   email = data.email;
