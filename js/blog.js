@@ -1,20 +1,33 @@
-import { getCurrentData } from "./utils.js";
+import {getCookie, getCurrentData} from "./utils.js";
 import { myFetch } from './utils.js';
 
-document.addEventListener("DOMContentLoaded", main);
+document.addEventListener("DOMContentLoaded", loadPage(1));
+document.getElementById('pagination').addEventListener('click', loadAnotherPage);
+document.getElementById("add-button").addEventListener("click", addPost);
 
-function main(){
-  loadPage(1);
-  // loadPagination(1);
-  document.getElementById('pagination').addEventListener('click', loadAnotherPage);
+async function loadPage(page){
+  let data = await  myFetch(`../backend/show_posts.php?page=${page}`, null, 'GET');
 
-  let add = document.getElementById("add-button");
-  add.addEventListener("click", addPost);
+  console.log(data);
+  if(data.success && data.message != 'No recent posts'){ // TODO: FARE MEGLIO!
+    let posts = document.getElementById("posts");
+    posts.innerHTML = '';
+
+    for (let i = 0; i < data.posts.length; i++) {
+      let postDiv = document.createElement("div");
+      postDiv.innerHTML = data.posts[i].Post;
+      posts.appendChild(postDiv);
+    }
+    loadPagination(page, data.num_pagination);
+  }else{
+      // TODO questo errore lo gestisco così?
+      document.getElementById('title').innerHTML = data.message;
+      // window.location.href = 'signin.html';
+  }
 }
 
 function loadAnotherPage(event) {
   if (event.target.classList.contains('page-link')) {
-    // Verifica se il testo del nodo figlio è "Next"
     let newPage;
     let pressed = event.target.childNodes[0].textContent;
     if (pressed === 'Next') {
@@ -27,25 +40,6 @@ function loadAnotherPage(event) {
       newPage = parseInt(event.target.innerText);
     }
     loadPage(newPage);
-  }
-}
-
-async function loadPage(page){
-  let data = await  myFetch(`../backend/show_posts.php?page=${page}`, null, 'GET');
-
-  console.log(data);
-  if(data.success){
-    let posts = document.getElementById("posts");
-    posts.innerHTML = '';
-
-    for (let i = 0; i < data.posts.length; i++) {
-      let postDiv = document.createElement("div");
-      postDiv.innerHTML = data.posts[i].Post;
-      posts.appendChild(postDiv);
-    }
-    loadPagination(page, data.num_pagination);
-  }else{
-    window.location.href = 'signin.html';
   }
 }
 
@@ -92,7 +86,7 @@ function loadPagination(currentPage, numPagination){
     //<editor-fold desc="NEXT">
     li = document.createElement('li');
     li.classList.add("page-item");
-  currentPage === numPagination ? li.classList.add('disabled') : null;
+    currentPage === numPagination ? li.classList.add('disabled') : null;
     a = document.createElement('a');
     a.classList.add("page-link");
     a.textContent = "Next";
@@ -107,14 +101,14 @@ async function addPost(event){
 
   let content = tinymce.get("myTextarea").getContent({format: 'html'});
   if(content){
-    let HTMLPost = createStandardPost(content, 'StandardName');
+      let fullname = getCookie('Fullname');
+      let HTMLPost = createStandardPost(content, fullname);
+      let formData = new FormData();
+      formData.append('post', HTMLPost.outerHTML);
 
-    let formData = new FormData();
-    formData.append('post', HTMLPost.outerHTML);
+      let data = await myFetch('../backend/add_post.php', formData, 'POST');
 
-    let data = await myFetch('../backend/add_post.php', formData, 'POST');
-
-    if(data.success){
+      if(data.success){
       // Return with ?success=true
 
       window.location.href = "blog.html";
@@ -127,7 +121,6 @@ async function addPost(event){
 function createStandardPost(content, fullname){
   // SECTION
   const newSection = document.createElement('div');
-  newSection.id = "new_section";
   newSection.classList.add("card", "text-center", "m-4");
   // HEADER
   const newHeader = document.createElement('div');

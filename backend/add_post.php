@@ -17,11 +17,6 @@ if($token = authorization()){
             JSONResponse(400, 'Bad Request');
     }
 
-    // TODO: validare anche $_POST['Post'] e $_POST['Data']
-    if(!validateEmail($_POST['email'])){
-        JSONResponse(400, 'Invalid Parameters');
-    }
-
     $email = $jwtManager->getEmailFromToken($token);
 
     try{

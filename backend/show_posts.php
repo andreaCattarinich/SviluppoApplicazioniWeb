@@ -4,6 +4,7 @@ require 'functions.php';
 require 'database.php';
 include 'error_reporting.php';
 require  'auth.php';
+global $jwtManager;
 
 if($_SERVER["REQUEST_METHOD"] !== 'GET'){
     JSONResponse(405, 'Method Not Allowed');
@@ -17,6 +18,9 @@ if($token = authorization()) try {
     // TODO SALTARE QUESTA QUERY SE SONO GIA' ENTRATO...
     // Magari farlo con l'utilizzo di JWT
     $posts = $db->query("SELECT * FROM posts");
+    if($posts->num_rows == 0)
+        JSONResponse(200, 'No recent posts');
+
     $numPagination = ceil($posts->num_rows / $postsXpage);
 
     if((int)$_GET['page'] <= 0)
@@ -34,14 +38,18 @@ if($token = authorization()) try {
         $data[] = $row;
     }
 
+    $fullname = $jwtManager->getFullnameFromToken($token);
     echo json_encode(array(
         'success' => true,
         'code' => 200,
+        'token' => $token,
+        'fullname' => $fullname,
         'posts' => $data,
         'num_posts' => $posts->num_rows,
         'num_pagination' => $numPagination,
         'curr_page' => $currentPage,
     ));
+    setcookie('Fullname', $fullname, $jwtManager->getExpireFromToken($token), '/');
     http_response_code(200);
     exit;
     //</editor-fold>

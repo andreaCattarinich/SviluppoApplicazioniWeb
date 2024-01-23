@@ -46,7 +46,7 @@ try{
         : time() + 60;
 
     $token = $jwtManager->createToken([
-        'expireDate' => $expire,
+        'ExpireDate' => $expire,
         'Firstname' => $row['Firstname'],
         'Lastname' => $row['Lastname'],
         'Email' => $row['Email']

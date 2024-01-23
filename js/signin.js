@@ -15,7 +15,8 @@ async function login(event){
     console.log(data);
     localStorage.setItem('auth-token', data.token);
 
-    window.location.href = 'profile.html'; // Reindirizzamento
+    // TODO scegliere dove reindirizzare
+    window.location.href = 'blog.html'; // Reindirizzamento
   }else{
     showError(data.code, data.error); // Gestione degli errori
   }

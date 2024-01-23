@@ -79,13 +79,25 @@ class JwtManager
         list(, $base64UrlPayload, ) = explode('.', $token);
         $payload = $this->base64UrlDecode($base64UrlPayload);
         $UrlPayload = json_decode($payload, true);
-        return $UrlPayload['expireDate'] > time();
+        return $UrlPayload['ExpireDate'] > time();
     }
     public function getEmailFromToken($token){
         list(, $base64UrlPayload, ) = explode('.', $token);
         $payload = $this->base64UrlDecode($base64UrlPayload);
         $UrlPayload = json_decode($payload, true);
         return $UrlPayload['Email'];
+    }
+    public function getFullnameFromToken($token){
+        list(, $base64UrlPayload, ) = explode('.', $token);
+        $payload = $this->base64UrlDecode($base64UrlPayload);
+        $UrlPayload = json_decode($payload, true);
+        return $UrlPayload['Firstname'] . ' ' . $UrlPayload['Lastname'];
+    }
+    public function getExpireFromToken($token){
+        list(, $base64UrlPayload, ) = explode('.', $token);
+        $payload = $this->base64UrlDecode($base64UrlPayload);
+        $UrlPayload = json_decode($payload, true);
+        return $UrlPayload['ExpireDate'];
     }
     public function getTokenFromServer(){
         // PRELEVO IL TOKEN DAL COOKIE (se presente)

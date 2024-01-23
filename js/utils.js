@@ -29,20 +29,28 @@ export function showError(code, error){
 export function getCurrentData(){
   const currentDate = new Date();
   const year = currentDate.getFullYear();
-  const month = (currentDate.getMonth() < 10 ? '0' : '') + currentDate.getMonth() + 1;
+  const month = (currentDate.getMonth() < 10 ? '0' : '') + (currentDate.getMonth() + 1);
   const day = (currentDate.getDate() < 10 ? '0' : '') + currentDate.getDate();
   const hours = (currentDate.getHours() < 10 ? '0' : '') + currentDate.getHours();
   const minutes = (currentDate.getMinutes() < 10 ? '0' : '') + currentDate.getMinutes();
 
-  // TODO cancellare
-  // const currentDate = new Date();
-  // const year = currentDate.getFullYear();
-  // const month = currentDate.getMonth() + 1;
-  // const day = currentDate.getDate();
-  // const hours = currentDate.getHours();
-  // const minutes = (currentDate.getMinutes() < 10 ? '0' : '') + currentDate.getMinutes();
-  
   return `${day}/${month}/${year} - ${hours}:${minutes}`;
+}
+
+export function getCookie(cname) {
+  let name = cname + "=";
+  let decodedCookie = decodeURIComponent(document.cookie);
+  let ca = decodedCookie.split(';');
+  for(let i = 0; i <ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
 }
 
 /******* AJAX *******/
@@ -62,7 +70,7 @@ export async function myFetch(url, input, method){
 
     let response = await fetch(url, requestConfig);
 
-    if (response.status !== 200) {
+    if (response.status < 200 || response.status > 299) {
       localStorage.removeItem('auth-token');
       window.location.href = 'signin.html';
     }
