@@ -42,8 +42,8 @@ try{
 
     //<editor-fold desc="COOKIE>
     $expire = (isset($_POST['rememberMe']) && $_POST['rememberMe'] == 'true')
-        ? time () + 300
-        : time() + 60;
+        ? time () + 60*60
+        : time() + 300;
 
     $token = $jwtManager->createToken([
         'ExpireDate' => $expire,
@@ -55,19 +55,14 @@ try{
     setcookie('Token', $token, $expire, '/');
     //</editor-fold>
 
-    echo json_encode(array(
-        'success'   => true,
-        'code'      => 200,
-        'message'   => 'Login successful',
+    JSONResponse(200, 'Login Successful', array(
         'token'     => $token,
         'data'      => array(
             'Firstname'   => $row['Firstname'],
             'Lastname'    => $row['Lastname'],
             'Email'       => $row['Email'],
-        ),
+        )
     ));
-    http_response_code(200);
-    exit;
 }catch (mysqli_sql_exception $e){
     JSONResponse(500, $e->getMessage());
 }

@@ -39,19 +39,17 @@ if($token = authorization()) try {
     }
 
     $fullname = $jwtManager->getFullnameFromToken($token);
-    echo json_encode(array(
-        'success' => true,
-        'code' => 200,
+
+    setcookie('Fullname', $fullname, $jwtManager->getExpireFromToken($token), '/');
+
+    JSONResponse(200, 'Show post OK', array(
         'token' => $token,
         'fullname' => $fullname,
         'posts' => $data,
         'num_posts' => $posts->num_rows,
         'num_pagination' => $numPagination,
-        'curr_page' => $currentPage,
+        'curr_page' => $currentPage
     ));
-    setcookie('Fullname', $fullname, $jwtManager->getExpireFromToken($token), '/');
-    http_response_code(200);
-    exit;
     //</editor-fold>
 } catch (mysqli_sql_exception $e) {
     JSONResponse(500, $e->getMessage());

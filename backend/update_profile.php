@@ -29,7 +29,11 @@ if($token = authorization()) {
     $firstname = validateInput($_POST['firstname']);
     $lastname = validateInput($_POST['lastname']);
     $email = strtolower(validateInput($_POST['email']));
-    $instagram = isset($_POST['instagram']) ? validateInput($_POST['instagram']) : ''; // TODO: vedere come gestire questo parametro e i test automatici
+    // Gestisco variabile aggiuntiva al progetto:
+    if(isset($_POST['instagram']) && validateUsername($_POST['instagram']))
+        $instagram = validateInput($_POST['instagram']);
+    else
+        JSONResponse(400, 'Invalid Instagram username');
 
     try {
         $db = db_connect();
@@ -38,20 +42,15 @@ if($token = authorization()) {
         $stmt->execute();
 
         if ($stmt->affected_rows == 1) {
-            echo json_encode(array(
-                'success' => true,
-                'code' => 200,
-                'message' => 'Data changed',
+            JSONResponse(200, 'Data changed', array(
                 'firstname' => $firstname,
                 'lastname' => $lastname,
                 'email' => $email,
-                'instagram' => $instagram,
+                'instagram' => $instagram
             ));
-            http_response_code(200);
         } else {
             JSONResponse(400, 'Nothing changed');
         }
-        exit;
     } catch (mysqli_sql_exception $e) {
         //JSONResponse(500, $e->getMessage() . $e->getCode());
         JSONResponse(500, 'Internal error');

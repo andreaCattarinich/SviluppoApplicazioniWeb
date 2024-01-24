@@ -18,17 +18,13 @@ if($token = authorization()) try {
         JSONResponse(500, 'Internal Server Error');
 
     $row = $result->fetch_assoc();
-    echo json_encode(array(
-        'success' => true,
-        'code' => 200,
+    JSONResponse(200, 'Show profile OK', array(
         'token' => $token,
         'firstname' => $row['Firstname'],
         'lastname' => $row['Lastname'],
         'email' => $row['Email'],
         'instagram' => $row['Instagram'],
     ));
-    http_response_code(200);
-    exit;
 } catch (mysqli_sql_exception $e) {
     JSONResponse(500, $e->getMessage());
 }

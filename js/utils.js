@@ -72,7 +72,7 @@ export async function myFetch(url, input, method){
 
     if (response.status < 200 || response.status > 299) {
       localStorage.removeItem('auth-token');
-      window.location.href = 'signin.html';
+      //window.location.href = 'signin.html';
     }
 
     return await response.json();

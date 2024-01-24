@@ -1,5 +1,7 @@
 <?php
 
+//use JetBrains\PhpStorm\NoReturn;
+
 use JetBrains\PhpStorm\NoReturn;
 
 function validateName($name): false|int{
@@ -34,14 +36,17 @@ function validateInput($data): string{
 }
 
 #[NoReturn]
-function JSONResponse($code, $message): void{
+function JSONResponse($code, $message, $optional = array()): void{
   http_response_code($code);
   $success = $code >= 200 && $code <= 299;
-  echo json_encode(array(
-      'success' => $success,
-      'code'    => $code,
-      'message' => $success ? $message : null,
-      'error'   => !$success ? $message : null,
-  ));
+  $standard = array(
+        'success' => $success,
+        'code'    => $code,
+        'message' => $success ? $message : null,
+        'error'   => !$success ? $message : null
+  );
+  if(!empty($optional))
+      $standard = array_merge($standard, $optional);
+  echo json_encode($standard);
   exit;
 }

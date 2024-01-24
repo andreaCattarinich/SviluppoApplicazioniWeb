@@ -98,8 +98,6 @@ async function updateData(){
     updateError.classList.remove("d-none", "alert-warning");
     updateError.classList.add("alert-success");
     updateError.textContent = data.message;
-  }else if(data.code === 401){
-    window.location.href = "signin.html";
   }else{
     let updateError = document.getElementById("update-error");
     updateError.classList.remove("d-none", "alert-success");
