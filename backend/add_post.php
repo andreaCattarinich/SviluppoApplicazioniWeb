@@ -6,29 +6,28 @@ include 'error_reporting.php';
 require  'auth.php';
 global $jwtManager;
 
-if($_SERVER['REQUEST_METHOD'] !== 'POST'){
-    JSONResponse(405, 'Method Not Allowed');
-}
-if($token = authorization()){
-    $fields = array('post');
+try{
+    if($_SERVER['REQUEST_METHOD'] !== 'POST')
+        throw new Exception('Method Not Allowed', 405);
 
-    foreach ($fields as $name) {
-        if (empty($_POST[$name]))
-            JSONResponse(400, 'Bad Request');
-    }
+    if($token = authorization()) {
+        if (empty($_POST['post']))
+            throw new Exception('Bad Request', 400);
 
-    $email = $jwtManager->getEmailFromToken($token);
+        $email = $jwtManager->getEmailFromToken($token);
 
-    try{
+        //<editor-fold desc="ADD POST> Lato backend
+        $fullname = $jwtManager->getFullnameFromToken($token);
+        //</editor-fold>
+
         $db = db_connect();
         $currentTime = time();
-        $stmt = $db->prepare("INSERT INTO posts (Email,Post,Date) VALUES (?,?,$currentTime)");
-        $stmt->bind_param('ss', $email,$_POST['post']);
+        $stmt = $db->prepare("INSERT INTO posts (Fullname,Email,Role,Post,Date) VALUES (?,?,'Admin',?,$currentTime)");
+        $stmt->bind_param('sss', $fullname, $email,$_POST['post']);
         $stmt->execute();
-
-        JSONResponse(201, "New Record Successfully");
-    }catch(mysqli_sql_exception $e){
-        JSONResponse(500, $e->getMessage());
     }
+}catch (Exception | mysqli_sql_exception $e){
+    JSONResponse($e->getMessage(), $e->getCode());
+} finally {
+    JSONResponse('New Record Added Successfully', 201);
 }
-

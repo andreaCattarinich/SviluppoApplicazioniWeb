@@ -1,4 +1,4 @@
-import {getCookie, getCurrentData} from "./utils.js";
+import { getCookie, getCurrentData} from "./utils.js";
 import { myFetch } from './utils.js';
 
 document.addEventListener("DOMContentLoaded", loadPage(1));
@@ -49,7 +49,6 @@ function loadPagination(currentPage, numPagination){
 
     //<editor-fold desc="PREVIOUS">
     let li = document.createElement('li');
-    li.classList.add("page-item");
     currentPage === 1 ? li.classList.add('disabled') : null;
     let a = document.createElement('a');
     a.classList.add("page-link");

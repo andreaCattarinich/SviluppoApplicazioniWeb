@@ -2,14 +2,16 @@
 const SECRET_KEY = 'QWERTYZZZ';
 $jwtManager = new JwtManager(SECRET_KEY);
 
-/******** CONTROLLO AUTORIZZAZIONE CON TOKEN JWT *******/
+/******** CONTROLLO AUTORIZZAZIONE CON TOKEN JWT ******
+ * @throws Exception
+ */
 function authorization(){
     global $jwtManager;
     $token = $jwtManager->getTokenFromServer();
     if($jwtManager->expiredToken($token))
         return $token;
     else
-        JSONResponse(401, 'Unauthorized');
+        throw new Exception('Login Time-out', 440);
 }
 
 /************** JWT OPERATIONS *******************/
@@ -65,7 +67,7 @@ class JwtManager
         $binSign = hash_hmac('SHA256', $string, SECRET_KEY, true);
         return $this->base64UrlEncode($binSign);
     }
-    public function getTokenData($token)
+    public function getTokenPayload($token)
     {
         $parts = explode('.', $token);
         if (sizeof($parts) != 3) {
@@ -74,47 +76,54 @@ class JwtManager
         $payload = $parts[1];
         return json_decode($this->base64UrlDecode($payload), true);
     }
+    public function getTokenData($token)
+    {
+        $payload = $this->getTokenPayload($token);
+        return $payload['data'];
+    }
     public function expiredToken($token): bool
     {
-        list(, $base64UrlPayload, ) = explode('.', $token);
-        $payload = $this->base64UrlDecode($base64UrlPayload);
-        $UrlPayload = json_decode($payload, true);
-        return $UrlPayload['ExpireDate'] > time();
+        $payload = $this->getTokenPayload($token);
+        return $payload['exp'] > time();
     }
     public function getEmailFromToken($token){
-        list(, $base64UrlPayload, ) = explode('.', $token);
-        $payload = $this->base64UrlDecode($base64UrlPayload);
-        $UrlPayload = json_decode($payload, true);
-        return $UrlPayload['Email'];
+        $data = $this->getTokenData($token);
+        return $data['Email'];
     }
-    public function getFullnameFromToken($token){
-        list(, $base64UrlPayload, ) = explode('.', $token);
-        $payload = $this->base64UrlDecode($base64UrlPayload);
-        $UrlPayload = json_decode($payload, true);
-        return $UrlPayload['Firstname'] . ' ' . $UrlPayload['Lastname'];
+    public function getFullnameFromToken($token): string
+    {
+        $data = $this->getTokenData($token);
+        return $data['Firstname'] . ' ' . $data['Lastname'];
     }
-    public function getExpireFromToken($token){
-        list(, $base64UrlPayload, ) = explode('.', $token);
-        $payload = $this->base64UrlDecode($base64UrlPayload);
-        $UrlPayload = json_decode($payload, true);
-        return $UrlPayload['ExpireDate'];
+    public function getExpireFromToken($token)
+    {
+        $payload = $this->getTokenPayload($token);
+        return $payload['exp'];
     }
+
+    /**
+     * @throws Exception
+     */
     public function getTokenFromServer(){
         // PRELEVO IL TOKEN DAL COOKIE (se presente)
-        if(isset($_COOKIE['Token']))
-            return $_COOKIE['Token'];
+        if(isset($_COOKIE['auth-token'])){
+            if($this->validateToken($_COOKIE['auth-token']))
+                return $_COOKIE['auth-token'];
+            else
+                throw new Exception('Unauthorized', 401);
+        }
 
         // PRELEVO IL TOKEN DALL'HEADER (se presente)
         if (!isset($_SERVER['HTTP_AUTHENTICATION']))
-            JSONResponse(401, 'Unauthorized');
+            throw new Exception('Unauthorized', 401);
 
         $tokenParts = explode(' ', $_SERVER['HTTP_AUTHENTICATION']);
         if (sizeof($tokenParts) != 2)
-            JSONResponse(401, 'Unauthorized');
+            throw new Exception('Unauthorized', 401);
 
         $token = $tokenParts[1];
-        if ($this->validateToken($token))
-            JSONResponse(401, 'Unauthorized');
+        if (!($this->validateToken($token)))
+            throw new Exception('Unauthorized', 401);
 
         return $token;
     }

@@ -15,7 +15,7 @@ export function getDataFromForm(nameForm){
   return data;
 }
 
-export function showError(code, error){
+export function showError(error, code = null){
   // If I want to manage codes error, use code parameter
   let title = document.getElementById("title");
   let subtitle = document.getElementById("subtitle");  
@@ -37,30 +37,14 @@ export function getCurrentData(){
   return `${day}/${month}/${year} - ${hours}:${minutes}`;
 }
 
-export function getCookie(cname) {
-  let name = cname + "=";
-  let decodedCookie = decodeURIComponent(document.cookie);
-  let ca = decodedCookie.split(';');
-  for(let i = 0; i <ca.length; i++) {
-    let c = ca[i];
-    while (c.charAt(0) == ' ') {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return "";
-}
-
 /******* AJAX *******/
 export async function myFetch(url, input, method){
   try{
-    let token = getTokenFromLocalStorage();
+    let token = getCookie('auth-token');
     let requestConfig = {
       method: method,
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authentication: `Bearer ${token}`,
       },
     };
     // AGGIUNGO IL BODY SE E' UN POST
@@ -70,23 +54,37 @@ export async function myFetch(url, input, method){
 
     let response = await fetch(url, requestConfig);
 
+    if(response.status === 401){
+      localStorage.removeItem('auth-token');
+      window.location.href = 'signin.html';
+    }
+
+    /*
     if (response.status < 200 || response.status > 299) {
       localStorage.removeItem('auth-token');
       //window.location.href = 'signin.html';
     }
+    */
 
     return await response.json();
   } catch (error){
     console.log('Errore: ', error);
   }
 }
-
+export function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2)
+    return parts.pop().split(';').shift();
+}
+/*
 export function getTokenFromLocalStorage(){
   let token = localStorage.getItem('auth-token');
   // TODO: controllare...
   if(!token){
     // window.location.href = 'signin.html';
-    console.log('Token non trovato.');
+    console.log('auth-token non trovato.');
   }
   return token;
 }
+*/

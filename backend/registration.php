@@ -1,5 +1,4 @@
 <?php
-header('Content-Type: application/json');
 require 'functions.php';
 require 'database.php';
 include 'error_reporting.php';
@@ -7,7 +6,6 @@ include 'error_reporting.php';
 try{
     if($_SERVER['REQUEST_METHOD'] !== 'POST')
         throw new Exception('Method Not Allowed', 405);
-        //JSONResponse(405, 'Method Not Allowed');
 
     $fields = array(
         'firstname',
@@ -20,13 +18,11 @@ try{
     foreach ($fields as $name) {
         if (empty($_POST[$name]))
             throw new Exception('Bad Request', 400);
-            //JSONResponse(400, 'Bad Request');
     }
 
     if( !validateName($_POST['firstname'])  || !validateName($_POST['lastname']) ||
         !validateEmail($_POST['email'])     || !validatePassword($_POST['pass'])){
         throw new Exception('Invalid Parameters', 400);
-        //JSONResponse(400, 'Invalid Parameters');
     }
 
     $firstname = validateInput($_POST['firstname']);
@@ -34,7 +30,7 @@ try{
     $email = strtolower(validateInput($_POST['email']));
 
     if($_POST['pass'] !== $_POST['confirm'])
-      JSONResponse(400, 'Password do not match');
+        throw new Exception('Password do not match', 400);
 
     $hash = password_hash(trim($_POST['pass']), PASSWORD_DEFAULT);
     $db = db_connect();
@@ -42,13 +38,17 @@ try{
     $stmt->bind_param('ssss', $firstname, $lastname, $email, $hash);
     $stmt->execute();
 
-} catch(mysqli_sql_exception $e){
-    ($e->getCode() == 1062)
-        ? JSONResponse(409, "Email already exits")
-        : JSONResponse(500, 'Internal error');
-} catch (Exception $e){
-    JSONResponse($e->getCode(), $e->getMessage());
-    //JSONResponse(422, 'Something goes wrong');
+} catch(Exception | mysqli_sql_exception $e){
+    if($e->getCode() == 1062)
+        //JSONResponse('Email already exits', 409);
+        header('HTTP/1.1 409 Email already exits');
+    else
+        //JSONResponse('Something goes wrong', 500);
+        //header("HTTP/1.1 {$e->getCode()} {$e->getMessage()}");
+        header('HTTP/1.1 500 Something goes wrong');
+    exit;
 } finally {
-    JSONResponse(201, "Registration Successful");
+    //JSONResponse('Registration Successful', 201);
+    header('HTTP/1.1 201 Registration Successful');
+    exit;
 }

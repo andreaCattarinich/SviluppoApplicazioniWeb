@@ -1,7 +1,4 @@
 <?php
-
-//use JetBrains\PhpStorm\NoReturn;
-
 use JetBrains\PhpStorm\NoReturn;
 
 function validateName($name): false|int{
@@ -24,11 +21,6 @@ function validateUsername($username): false|int{
     return preg_match($regex, htmlspecialchars($username));
 }
 
-// TODO: togliere questa funzione
-function validRememberMe(mixed $rememberMe): bool{
-    return $rememberMe == "true" || $rememberMe == "false";
-}
-
 function validateInput($data): string{
     $data = trim($data);
     $data = stripslashes($data);
@@ -36,17 +28,18 @@ function validateInput($data): string{
 }
 
 #[NoReturn]
-function JSONResponse($code, $message, $optional = array()): void{
-  http_response_code($code);
-  $success = $code >= 200 && $code <= 299;
-  $standard = array(
+function JSONResponse($message, $status, $optional = array()): void{
+    header('Content-Type: application/json');
+    //http_response_code($status);
+    $success = $status >= 200 && $status <= 299;
+    $standard = array(
         'success' => $success,
-        'code'    => $code,
+        'code'    => $status,
         'message' => $success ? $message : null,
         'error'   => !$success ? $message : null
-  );
-  if(!empty($optional))
-      $standard = array_merge($standard, $optional);
-  echo json_encode($standard);
-  exit;
+    );
+    if(!empty($optional))
+        $standard = array_merge($standard, $optional);
+    echo json_encode($standard);
+    exit;
 }

@@ -1,15 +1,10 @@
 <?php
-if(isset($_COOKIE['Token'])){
-    // TODO: destroy JWT
-    // Devo anche togliere il cookie dal client?
-//    $unencodedData = (array) $_COOKIE['Token'];
-//    echo $unencodedData['expireDate'];
-//    exit;
+    if(isset($_COOKIE['auth-token'])){
+        setcookie('auth-token', '', time()-3600, '/');
 
-    setcookie('Token', '', time()-3600, '/');
-
-    header('Location: ../frontend/signin.html'); // Reindirizzamento
-}else{
-    header('Location: ../frontend/');
-}
+        // Reindirizzamento
+        header('Location: ../frontend/signin.html');
+    }else{
+        header('Location: ../frontend/');
+    }
 exit;

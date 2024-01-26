@@ -1,4 +1,4 @@
-import { getDataFromForm, myFetch } from "./utils.js";
+import { getCookie, getDataFromForm } from "./utils.js";
 
 let firstname, lastname, email, instagram;
 
@@ -7,13 +7,27 @@ document.addEventListener('click', clickButton);
 
 async function showProfile(event){
   event.preventDefault();
-  let data = await myFetch('../backend/show_profile.php', null, 'GET');
+  try{
+    const token = getCookie('auth-token');
+    const response = await fetch('../backend/show_profile.php', {
+      method: 'GET',
+      headers: {
+        Authentication: `Bearer ${token}`,
+      },
+    });
 
-  firstname = data.firstname;
-  lastname = data.lastname;
-  email = data.email;
-  instagram = data.instagram;
-  loadData();
+    if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
+
+    const data = await response.json();
+
+    firstname = data.firstname;
+    lastname = data.lastname;
+    email = data.email;
+    instagram = data.instagram;
+    loadData(); // TODO: passare data come parametro e gestire tutto dalla funzione
+  } catch (error){
+    window.location.href = 'signin.html';
+  }
 }
 
 async function clickButton(event){
@@ -22,7 +36,7 @@ async function clickButton(event){
     if(button.textContent === 'Edit profile'){
       loadEditMode();
     }else if(button.textContent === 'Update'){
-      await updateData();
+      await updateProfile();
     }else if(button.textContent === 'Cancel'){
       loadLandingPage();
     }
@@ -76,21 +90,26 @@ function loadLandingPage(){
   cancelButton.textContent = 'Edit profile';
 }
 
-async function updateData(){
-  let updateForm = document.getElementById("update-form");
-  let userData = getDataFromForm(updateForm);
+async function updateProfile(){
+  try{
+    let updateForm = document.getElementById("update-form");
+    let data2Update = getDataFromForm(updateForm);
+    const response = await fetch('../backend/update_profile.php', {
+      method: 'POST',
+      body: data2Update,
+    })
 
-  let data = await myFetch('../backend/update_profile.php', userData, 'POST');
-  console.log(data);
 
-  if(data.success){
-    // SALVO NELLE VARIABILI I NUOVI DATI
+    //throw new Error(`${response.status} ${response.statusText}`);
+    if (!response.ok) throw new Error(`${response.statusText}`);
+
+    const data = await response.json();
+
     firstname = data.firstname;
     lastname = data.lastname;
     email = data.email;
     instagram = data.instagram;
 
-    // RICARICO I DATI
     loadLandingPage();
 
     // SEGNALO IL CORRETTO FUNZIONAMENTO
@@ -98,11 +117,12 @@ async function updateData(){
     updateError.classList.remove("d-none", "alert-warning");
     updateError.classList.add("alert-success");
     updateError.textContent = data.message;
-  }else{
+
+  } catch (error){
     let updateError = document.getElementById("update-error");
     updateError.classList.remove("d-none", "alert-success");
     updateError.classList.add("alert-warning");
-    updateError.textContent = data.error;
+    updateError.textContent = error.message;
   }
 }
 

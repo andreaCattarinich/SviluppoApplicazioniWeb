@@ -1,29 +1,25 @@
 <!doctype html>
-<html lang="en" data-bs-theme="auto">
-  <head><script src="../assets/js/color-modes.js"></script>
-
+<html lang="en">
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <link href="assets/brand/satelite.png" rel="icon" />
+    <link href="assets/dist/css/bootstrap.min.css" rel="stylesheet">
     <title>Login</title>
-
-    <link href="../assets/brand/satelite.png" rel="icon" />
-    <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
-  </head>
-
-  <body class="bg-body-tertiary">
+</head>
+<body class="bg-body-tertiary">
     <div id="my_navbar"></div>
-
     <div class="container">
         <main class="form-signin w-100 m-auto">
             <div class="py-5 text-center">
-                <img class="d-block mx-auto mb-4" src="../assets/brand/computer-logo.svg" alt="" width="72" height="57">
+                <img class="d-block mx-auto mb-4" src="assets/brand/computer-logo.svg" alt="" width="72" height="57">
                 <h2 id="title">Login form</h2>
                 <p id="subtitle" class="lead">Please sigin</p>
             </div>
-            
+
             <h4 class="mb-3">Credentials</h4>
-            
+
             <!-- TODO: Controllare il form -->
             <form id="login" method="post">
                 <div class="row g-3">
@@ -34,13 +30,13 @@
                       <div class="invalid-feedback">Your email is required.</div>
                       </div>
                     </div>
-                    
+
                     <div class="col-sm-12">
                       <label for="pass" class="form-label">Password</label>
                       <input type="password" class="form-control" id="pass" name="pass" placeholder="Enter your password" value="" required>
                       <div class="invalid-feedback">Password is required.</div>
                     </div>
-                    
+
                     <div class="col-sm-12">
                         <input type="checkbox" class="form-check-input" id="rememberMe" value="">
                         <label class="form-check-label" for="rememberMe">
@@ -56,13 +52,10 @@
         </main>
 
         <div id="my_footer"></div>
-
     </div>
 
-    <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- INCLUDE NAVBAR & FOOTER-->
-    <script src="../js/include_homepage_elements.js"></script>
-    <script src="../js/signin.js" type="module"></script>
-  </body>
+    <script src="assets/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/navbarHome.js"></script>
+    <script src="js/signin.js" type="module"></script>
+</body>
 </html>

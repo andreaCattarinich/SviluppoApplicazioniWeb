@@ -5,28 +5,23 @@ include 'error_reporting.php';
 require 'auth.php';
 global $jwtManager;
 
-if($_SERVER["REQUEST_METHOD"] !== 'POST'){
-  JSONResponse(405, 'Method Not Allowed');
-}
-
-$fields = array(
-    'email',
-    'pass'
-);
-
-foreach ($fields as $name) {
-    if (empty($_POST[$name]))
-        JSONResponse(400, 'Bad Request');
-}
-
-if(!validateEmail($_POST['email']) || !validatePassword($_POST['pass'])){
-    JSONResponse(400, 'Invalid Parameters');
-}
-
-$email = strtolower(validateInput($_POST['email']));
-$password = trim($_POST['pass']);
-
 try{
+    if($_SERVER['REQUEST_METHOD'] !== 'POST')
+        throw new Exception('Method Not Allowed', 405);
+
+    $fields = array('email', 'pass');
+
+    foreach ($fields as $name) {
+        if (empty($_POST[$name]))
+            throw new Exception('Bad Request', 400);
+    }
+
+    if(!validateEmail($_POST['email']) || !validatePassword($_POST['pass']))
+        throw new Exception('Invalid Parameters', 400);
+
+    $email = strtolower(validateInput($_POST['email']));
+    $password = trim($_POST['pass']);
+
     $db = db_connect();
     $stmt = $db->prepare("SELECT * FROM users WHERE Email=?");
     $stmt->bind_param('s', $email);
@@ -34,35 +29,46 @@ try{
 
     $result = $stmt->get_result();
     if($result->num_rows == 0)
-        JSONResponse(404, 'Email not found');
+        throw new Exception('Email not found', 404);
 
     $row = $result->fetch_assoc();
     if(!password_verify($password, $row['Password']))
-        JSONResponse(401, 'Unauthorized');
+        throw new Exception('Unauthorized', 401);
 
-    //<editor-fold desc="COOKIE>
-    $expire = (isset($_POST['rememberMe']) && $_POST['rememberMe'] == 'true')
-        ? time () + 60*60
-        : time() + 300;
-
-    $token = $jwtManager->createToken([
-        'ExpireDate' => $expire,
+    $data = [
         'Firstname' => $row['Firstname'],
         'Lastname' => $row['Lastname'],
-        'Email' => $row['Email']
+        'Email' => $row['Email'],
+    ];
+
+    //<editor-fold desc="COOKIE>
+    $delta = isset($_POST['rememberMe']) && $_POST['rememberMe'] == 'true'
+        ? 60*60 // 1 hour
+        : 300;  // 5 minutes
+
+    $token = $jwtManager->createToken([
+        'iss' => 'http://localhost',
+        'iat' => time(),
+        'exp' => time() + $delta,
+        'data' => $data,
     ]);
 
-    setcookie('Token', $token, $expire, '/');
+    // TODO l'orario è corretto? Non ho ritardi?
+    setcookie('auth-token', $token, time()+$delta, '/');
     //</editor-fold>
 
-    JSONResponse(200, 'Login Successful', array(
+    $options = [
         'token'     => $token,
-        'data'      => array(
-            'Firstname'   => $row['Firstname'],
-            'Lastname'    => $row['Lastname'],
-            'Email'       => $row['Email'],
-        )
-    ));
-}catch (mysqli_sql_exception $e){
-    JSONResponse(500, $e->getMessage());
+        'data'      => $data,
+    ];
+} catch (Exception | mysqli_sql_exception $e){
+    //JSONResponse('Unauthorized', 401);
+    //JSONResponse($e->getMessage(), $e->getCode());
+    //JSONResponse($e->getMessage(), 500);
+    header('HTTP/1.1 401 Unauthorized');
+    exit;
+} finally {
+    //JSONResponse('Login Successful', 200, $options);
+    header('Location: ../frontend/profile.html');
+    exit;
 }
