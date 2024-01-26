@@ -36,8 +36,8 @@ try{
         $stmt->bind_param('ssss', $firstname, $lastname, $instagram, $email);
         $stmt->execute();
 
-        if($stmt->affected_rows == 0) // TODO codice errore 304 non funge
-            throw new Exception('Nothing changed', 304); // [adesso funziona!!!]
+        if($stmt->affected_rows == 0)
+            throw new Exception('Nothing changed', 304);
 
         if ($stmt->affected_rows == 1) {
             $options = [
