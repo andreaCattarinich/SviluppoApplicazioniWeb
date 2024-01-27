@@ -128,6 +128,7 @@ class JwtManager
         $data = $this->getTokenData($token);
         return $data['Firstname'] . ' ' . $data['Lastname'];
     }
+
     public function getExpireFromToken($token)
     {
         $payload = $this->getTokenPayload($token);

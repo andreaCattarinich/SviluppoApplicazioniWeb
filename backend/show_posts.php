@@ -12,54 +12,44 @@ try{
     if($token = authorization()) {
         $db = db_connect();
 
-        //<editor-fold desc="POSTS">
         $postsXpage = 3;
 
-        // TODO SALTARE QUESTA QUERY SE SONO GIA' ENTRATO..., Magari farlo con l'utilizzo di JWT
-        $posts = $db->query("SELECT * FROM posts");
-        if ($posts->num_rows == 0){
-            //throw new Exception('No recent posts', 200);
-            header('HTTP/1.1 204 No Content');
-            exit;
+        $q = '%' . ($_GET['q'] ?? '') . '%';
+
+        $from = ((int)$_GET['page'] - 1) * $postsXpage;
+        $db = db_connect();
+        $stmt = $db->prepare("SELECT p.id as id, CONCAT(u.Firstname, ' ', u.Lastname) as fullname, role, content, created_at FROM catta.posts2 as p left join catta.users as u on u.Email = p.user_email WHERE content LIKE ? ORDER BY created_at DESC limit " . $postsXpage . " offset " . $from . ";");
+        $stmt->bind_param('s', $q);
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+
+        $posts = [];
+
+         while ($row = $result->fetch_assoc()) {
+            $posts[] = $row;
         }
 
-
-        $numPagination = (int)ceil($posts->num_rows / $postsXpage);
-
-        if ((int)$_GET['page'] <= 0)
-            $currentPage = 1;
-        else if ((int)$_GET['page'] >= $numPagination)
-            $currentPage = $numPagination;
-        else
-            $currentPage = (int)$_GET['page'];
-
-        $firstResult = ($currentPage - 1) * $postsXpage;
-
-        $showPosts = $db->query("SELECT * FROM posts ORDER BY date DESC LIMIT $firstResult , $postsXpage");
-        $data = [];
-        while ($row = $showPosts->fetch_assoc())
-            $data[] = $row;
-
-
-        $fullname = $jwtManager->getFullnameFromToken($token);
-        setcookie('Fullname', $fullname, $jwtManager->getExpireFromToken($token), '/');
+        $stmt = $db->prepare("SELECT COUNT(*) as total_number FROM catta.posts2");
+        $stmt->execute();
+        $total_number = $stmt->get_result()->fetch_assoc()['total_number'];
 
         $options = [
-            'token' => $token,
-            'fullname' => $fullname,
-            'posts' => $data,
-            'num_posts' => $posts->num_rows,
-            'num_pagination' => $numPagination,
-            'curr_page' => $currentPage
+            'posts' => $posts,
+            'num_posts' => (int) $total_number,
+            'num_pagination' => ceil((int) $total_number / $postsXpage),
+            'curr_page' => (int) $_GET['page'],
         ];
-        //</editor-fold>
     }
-} catch (Exception | mysqli_sql_exception $e) {
+} catch (Exception $e) {
     // TODO va bene?
     //JSONResponse($e->getMessage(), $e->getCode());
-    $e->getCode() === 401
-        ? header('Location: ../frontend/signin.html')
-        : header("HTTP/1.1 {$e->getCode()} {$e->getMessage()}");
+    //$e->getCode() === 401
+      //  ? header('Location: ../frontend/signin.html')
+        //: header("HTTP/1.1 {$e->getCode()} {$e->getMessage()}");
+
+    echo $e->getMessage();
+
     exit;
 } finally {
     JSONResponse('Show Posts Successful', 200, $options);

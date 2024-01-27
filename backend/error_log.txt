@@ -23,3 +23,44 @@ Error: [2] Undefined array key "search" - C:\Users\andyc\OneDrive - unige.it\Uni
 Error: [8192] trim(): Passing null to parameter #1 ($string) of type string is deprecated - C:\Users\andyc\OneDrive - unige.it\Università\Sviluppo di Applicazioni Web\progetti\_devSAW\_V1\backend\functions.php:25
 Error: [2] Undefined variable $optional - C:\Users\andyc\OneDrive - unige.it\Università\Sviluppo di Applicazioni Web\progetti\_devSAW\_V1\backend\show_allUsers.php:59
 Error: [2] Undefined variable $options - C:\Users\andyc\OneDrive - unige.it\Università\Sviluppo di Applicazioni Web\progetti\_devSAW\_V1\backend\update_user.php:42
+Error: [2] Undefined variable $options - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:79
+Error: [2] Undefined variable $options - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:79
+Error: [2] Undefined variable $options - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:79
+Error: [2] Undefined variable $options - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:79
+Error: [2] Undefined variable $options - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:79
+Error: [2] Undefined array key "q" - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:18
+Error: [2] Undefined array key "q" - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:18
+Error: [2] Undefined array key "q" - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:18
+Error: [2] Undefined array key "q" - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:18
+Error: [2] Undefined array key "q" - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:18
+Error: [2] Undefined array key "q" - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:18
+Error: [2] Undefined array key "q" - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:18
+Error: [2] Undefined array key "q" - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:18
+Error: [2] Undefined array key "q" - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:18
+Error: [2] Undefined array key "q" - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:18
+Error: [2] Undefined array key "q" - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:18
+Error: [2] Undefined array key "q" - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:18
+Error: [2] Undefined array key "q" - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:18
+Error: [2] Undefined array key "q" - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:18
+Error: [2] Undefined array key "q" - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:18
+Error: [2] Undefined array key "q" - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:18
+Error: [2] Undefined variable $options - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:61
+Error: [2] Undefined array key "q" - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:18
+Error: [2] Undefined variable $options - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:59
+Error: [2] Undefined array key "q" - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:18
+Error: [2] Undefined variable $options - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:59
+Error: [2] Undefined array key "q" - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:18
+Error: [2] Undefined array key "q" - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:18
+Error: [2] Undefined array key "q" - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:18
+Error: [2] Undefined variable $options - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:58
+Error: [2] Undefined array key "q" - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:18
+Error: [2] Undefined array key "q" - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:18
+Error: [2] Undefined array key "q" - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:17
+Error: [2] Undefined array key "q" - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:17
+Error: [2] Undefined array key "q" - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:17
+Error: [2] Undefined array key "q" - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:17
+Error: [2] Undefined array key "q" - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:17
+Error: [2] Undefined array key "q" - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:17
+Error: [2] Undefined array key "q" - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:17
+Error: [2] Undefined array key "q" - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:17
+Error: [2] Undefined array key "q" - C:\Users\nicol\PhpstormProjects\SAWCatta\backend\show_posts.php:17

@@ -4,7 +4,7 @@ function db_connect(): mysqli{ // TODO: togliere le credenziali da qui
     $servername = "localhost";
     $user = "root";
     $db_passw = "";
-    $db_name = "saw";
+    $db_name = "catta";
     //</editor-fold>
 
     //<editor-fold desc="ALTERVISTA">
