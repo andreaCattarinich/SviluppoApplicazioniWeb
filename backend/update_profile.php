@@ -50,7 +50,9 @@ try{
     }
 }catch (Exception | mysqli_sql_exception $e){
     //JSONResponse($e->getMessage(), $e->getCode());
-    header("HTTP/1.1 {$e->getCode()} {$e->getMessage()}");
+    $e->getCode() === 401
+        ? header('Location: ../frontend/signin.html')
+        : header("HTTP/1.1 {$e->getCode()} {$e->getMessage()}");
     exit;
 } finally {
     JSONResponse('Update Successful', 200, $options);

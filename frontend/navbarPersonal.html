@@ -18,7 +18,10 @@
           <a id="blog" class="nav-link" href="blog.html">Blog</a>
         </li>
         <li class="nav-item">
-          <a id="show-profile" class="nav-link" href="profile.html">Show profile</a>
+          <a id="show-profile" class="nav-link" href="profile.html">Profile</a>
+        </li>
+        <li class="nav-item">
+          <a id="admin" class="nav-link" href="admin.html">Admin</a>
         </li>
         <li class="nav-item">
           <a id="logout" class="nav-link" href="../backend/logout.php">
@@ -30,8 +33,15 @@
           </a>
         </li>
       </ul>
-      <form role="search">
-        <input class="form-control" type="search" placeholder="Search" aria-label="Search">
+      <form id="search-form" method="post" role="search">
+        <div class="input-group">
+          <span class="input-group-text" id="basic-addon1">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+              <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"></path>
+            </svg>
+          </span>
+          <input type="text" class="form-control" id="search" name="search" placeholder="Search" value="">
+        </div>
       </form>
     </div>
   </div>

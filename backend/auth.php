@@ -14,6 +14,39 @@ function authorization(){
         throw new Exception('Login Time-out', 440);
 }
 
+/******** CONTROLLO AUTORIZZAZIONE E RUOLO **********
+ * @throws Exception
+ */
+function admin(){
+    global $jwtManager;
+    try {
+        if ($token = authorization()) {
+            $db = db_connect();
+            $email = $jwtManager->getEmailFromToken($token);
+            $stmt = $db->prepare("SELECT Role FROM users WHERE Email=?");
+            $stmt->bind_param('s', $email);
+            $stmt->execute();
+
+            $result = $stmt->get_result();
+            if ($result->num_rows != 1)
+                throw new Exception('Unauthorized', 401);
+            $role = $result->fetch_assoc();
+            if ($role['Role'] != 'Admin')
+                throw new Exception('Unauthorized', 401);
+        }
+    } catch (Exception | mysqli_sql_exception $e){
+        if($e->getCode() === 401)
+            header('Location: ../frontend/signin.html');
+        else if($e->getCode() >= 500)
+            header('HTTP/1.1 500 Internal Server Error');
+        else
+            header("HTTP/1.1 {$e->getCode()} {$e->getMessage()}");
+        exit;
+    } finally {
+        return $token;
+    }
+}
+
 /************** JWT OPERATIONS *******************/
 class JwtManager
 {
@@ -58,7 +91,7 @@ class JwtManager
     public function base64UrlDecode($data): false|string
     {
         $base64 = strtr($data, '-_', '+/');
-        $base64Padded = str_pad($base64, strlen($base64) % 4, '=', STR_PAD_RIGHT);
+        $base64Padded = str_pad($base64, strlen($base64) % 4, '=');
         return base64_decode($base64Padded);
     }
     public function getSign(string $header, string $payload): string

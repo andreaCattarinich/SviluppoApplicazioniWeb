@@ -1,1 +1,25 @@
 Error: [2] Undefined array key "aut" - xdebug://debug-eval:1
+Error: [2] Undefined array key "post" - xdebug://debug-eval:1
+Error: [2] Undefined array key "search" - C:\Users\andyc\OneDrive - unige.it\Università\Sviluppo di Applicazioni Web\progetti\_devSAW\_V1\backend\show_allUsers.php:17
+Error: [8192] trim(): Passing null to parameter #1 ($string) of type string is deprecated - C:\Users\andyc\OneDrive - unige.it\Università\Sviluppo di Applicazioni Web\progetti\_devSAW\_V1\backend\functions.php:25
+Error: [2] Undefined array key "search" - xdebug://debug-eval:1
+Error: [2] Undefined array key "search" - C:\Users\andyc\OneDrive - unige.it\Università\Sviluppo di Applicazioni Web\progetti\_devSAW\_V1\backend\show_allUsers.php:17
+Error: [8192] trim(): Passing null to parameter #1 ($string) of type string is deprecated - C:\Users\andyc\OneDrive - unige.it\Università\Sviluppo di Applicazioni Web\progetti\_devSAW\_V1\backend\functions.php:25
+Error: [2] Undefined array key "search" - C:\Users\andyc\OneDrive - unige.it\Università\Sviluppo di Applicazioni Web\progetti\_devSAW\_V1\backend\show_allUsers.php:17
+Error: [8192] trim(): Passing null to parameter #1 ($string) of type string is deprecated - C:\Users\andyc\OneDrive - unige.it\Università\Sviluppo di Applicazioni Web\progetti\_devSAW\_V1\backend\functions.php:25
+Error: [2] Undefined array key "search" - C:\Users\andyc\OneDrive - unige.it\Università\Sviluppo di Applicazioni Web\progetti\_devSAW\_V1\backend\show_allUsers.php:17
+Error: [8192] trim(): Passing null to parameter #1 ($string) of type string is deprecated - C:\Users\andyc\OneDrive - unige.it\Università\Sviluppo di Applicazioni Web\progetti\_devSAW\_V1\backend\functions.php:25
+Error: [2] Undefined array key "search" - C:\Users\andyc\OneDrive - unige.it\Università\Sviluppo di Applicazioni Web\progetti\_devSAW\_V1\backend\show_allUsers.php:17
+Error: [8192] trim(): Passing null to parameter #1 ($string) of type string is deprecated - C:\Users\andyc\OneDrive - unige.it\Università\Sviluppo di Applicazioni Web\progetti\_devSAW\_V1\backend\functions.php:25
+Error: [2] Undefined array key "search" - C:\Users\andyc\OneDrive - unige.it\Università\Sviluppo di Applicazioni Web\progetti\_devSAW\_V1\backend\show_allUsers.php:17
+Error: [8192] trim(): Passing null to parameter #1 ($string) of type string is deprecated - C:\Users\andyc\OneDrive - unige.it\Università\Sviluppo di Applicazioni Web\progetti\_devSAW\_V1\backend\functions.php:25
+Error: [2] Undefined array key "search" - C:\Users\andyc\OneDrive - unige.it\Università\Sviluppo di Applicazioni Web\progetti\_devSAW\_V1\backend\show_allUsers.php:17
+Error: [8192] trim(): Passing null to parameter #1 ($string) of type string is deprecated - C:\Users\andyc\OneDrive - unige.it\Università\Sviluppo di Applicazioni Web\progetti\_devSAW\_V1\backend\functions.php:25
+Error: [2] Undefined array key "search" - C:\Users\andyc\OneDrive - unige.it\Università\Sviluppo di Applicazioni Web\progetti\_devSAW\_V1\backend\show_allUsers.php:17
+Error: [8192] trim(): Passing null to parameter #1 ($string) of type string is deprecated - C:\Users\andyc\OneDrive - unige.it\Università\Sviluppo di Applicazioni Web\progetti\_devSAW\_V1\backend\functions.php:25
+Error: [2] Undefined array key "search" - C:\Users\andyc\OneDrive - unige.it\Università\Sviluppo di Applicazioni Web\progetti\_devSAW\_V1\backend\show_allUsers.php:17
+Error: [8192] trim(): Passing null to parameter #1 ($string) of type string is deprecated - C:\Users\andyc\OneDrive - unige.it\Università\Sviluppo di Applicazioni Web\progetti\_devSAW\_V1\backend\functions.php:25
+Error: [2] Undefined array key "search" - C:\Users\andyc\OneDrive - unige.it\Università\Sviluppo di Applicazioni Web\progetti\_devSAW\_V1\backend\show_allUsers.php:17
+Error: [8192] trim(): Passing null to parameter #1 ($string) of type string is deprecated - C:\Users\andyc\OneDrive - unige.it\Università\Sviluppo di Applicazioni Web\progetti\_devSAW\_V1\backend\functions.php:25
+Error: [2] Undefined variable $optional - C:\Users\andyc\OneDrive - unige.it\Università\Sviluppo di Applicazioni Web\progetti\_devSAW\_V1\backend\show_allUsers.php:59
+Error: [2] Undefined variable $options - C:\Users\andyc\OneDrive - unige.it\Università\Sviluppo di Applicazioni Web\progetti\_devSAW\_V1\backend\update_user.php:42

@@ -1,29 +1,70 @@
-import { getCookie, getCurrentData} from "./utils.js";
-import { myFetch } from './utils.js';
+import {getCookie, timeConverter} from "./utils.js";
 
 document.addEventListener("DOMContentLoaded", loadPage(1));
 document.getElementById('pagination').addEventListener('click', loadAnotherPage);
 document.getElementById("add-button").addEventListener("click", addPost);
 
 async function loadPage(page){
-  let data = await  myFetch(`../backend/show_posts.php?page=${page}`, null, 'GET');
+    try {
+        const token = getCookie('auth-token');
+        const response = await fetch(`../backend/show_posts.php?page=${page}`, {
+           method: 'GET',
+           headers: {
+               Authentication: `Bearer ${token}`,
+           },
+        });
 
-  console.log(data);
-  if(data.success && data.message != 'No recent posts'){ // TODO: FARE MEGLIO!
-    let posts = document.getElementById("posts");
-    posts.innerHTML = '';
+        //throw new Error(`${response.statusText}`);
+        if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
 
-    for (let i = 0; i < data.posts.length; i++) {
-      let postDiv = document.createElement("div");
-      postDiv.innerHTML = data.posts[i].Post;
-      posts.appendChild(postDiv);
+        if(response.redirected){
+            window.location.href = response.url;
+        }
+
+        if (response.status === 204)
+            document.getElementById('title').innerText = 'No Recent Posts';
+
+        const data = await response.json();
+        console.log(data);
+
+        let posts = document.getElementById("posts");
+        posts.innerHTML = '';
+
+        for (let i = 0; i < data.posts.length; i++) {
+            let postDiv = document.createElement("div");
+            postDiv.classList.add('card', 'my-4', 'ms-4');
+
+            let bodyDiv = document.createElement('div');
+            bodyDiv.classList.add('card-body');
+
+            let cardTitle = document.createElement('h5');
+            cardTitle.classList.add('card-title');
+            cardTitle.innerText = data.posts[i].Fullname
+
+            let cardSubtitle = document.createElement('span');
+            //cardSubtitle.classList.add('card-subtitle', 'mb-2', 'text-body-secondary', 'badge', 'text-bg-success');
+            cardSubtitle.classList.add('card-subtitle', 'mb-2', 'badge', classColor(data.posts[i]));
+            cardSubtitle.innerHTML = data.posts[i].Role;
+
+            let time = document.createElement('p');
+            let small = document.createElement('small');
+            small.innerText = timeConverter(data.posts[i].Date);
+            time.appendChild(small);
+
+            let contentPost = document.createElement('div');
+            contentPost.innerHTML = data.posts[i].Post;
+
+            postDiv.appendChild(bodyDiv);
+            bodyDiv.appendChild(cardTitle);
+            bodyDiv.appendChild(cardSubtitle);
+            bodyDiv.appendChild(time);
+            bodyDiv.appendChild(contentPost);
+            posts.appendChild(postDiv);
+        }
+        loadPagination(page, data.num_pagination);
+    }catch (error){
+        console.log(error);
     }
-    loadPagination(page, data.num_pagination);
-  }else{
-      // TODO questo errore lo gestisco così?
-      document.getElementById('title').innerHTML = data.message;
-      // window.location.href = 'signin.html';
-  }
 }
 
 function loadAnotherPage(event) {
@@ -96,47 +137,43 @@ function loadPagination(currentPage, numPagination){
 }
 
 async function addPost(event){
-  event.preventDefault();
+    event.preventDefault();
+    try{
+        let content = tinymce.get("myTextarea").getContent({format: 'html'});
+        const formData = new FormData();
+        formData.append('post', content);
 
-  let content = tinymce.get("myTextarea").getContent({format: 'html'});
-  if(content){
-      let fullname = getCookie('Fullname');
-      let HTMLPost = createStandardPost(content, fullname);
-      let formData = new FormData();
-      formData.append('post', HTMLPost.outerHTML);
+        const token = getCookie('auth-token');
+        const response = await fetch('../backend/add_post.php', {
+            method: 'POST',
+            headers: {
+                Authentication: `Bearer ${token}`,
+            },
+            //body: JSON.stringify({post : content}),
+            body: formData,
+        });
 
-      let data = await myFetch('../backend/add_post.php', formData, 'POST');
+        // if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
+        if (!response.ok) throw new Error(`${response.statusText}`);
 
-      if(data.success){
-      // Return with ?success=true
-
-      window.location.href = "blog.html";
-    }else{
-      console.log(data);
+        location.reload();
+        //window.location.href = "blog.html";
+    } catch (error){
+        window.location.href = 'signin.html';
     }
-  }
 }
 
-function createStandardPost(content, fullname){
-  // SECTION
-  const newSection = document.createElement('div');
-  newSection.classList.add("card", "text-center", "m-4");
-  // HEADER
-  const newHeader = document.createElement('div');
-  newHeader.classList.add("card-header");
-  newHeader.textContent = fullname;
-  // BODY
-  let newBody = document.createElement('div');
-  newBody.classList.add("card-body");
-  newBody.innerHTML = content;
-  // FOOTER
-  let newFooter = document.createElement('div');
-  newFooter.classList.add("card-footer", "text-muted");
-  newFooter.innerHTML = getCurrentData();
-
-  newSection.appendChild(newHeader);
-  newSection.appendChild(newBody);
-  newSection.appendChild(newFooter);
-
-  return newSection;
+function classColor(item) {
+    switch (item.Role) {
+        case 'Admin':
+            return 'text-bg-success';
+        case 'Moderator':
+            return 'text-bg-primary';
+        case 'Editor':
+            return 'text-bg-warning';
+        case 'Blocked':
+            return 'text-bg-danger';
+        default:
+            return 'text-bg-dark';
+    }
 }

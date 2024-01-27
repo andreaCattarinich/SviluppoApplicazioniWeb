@@ -1,5 +1,4 @@
 <?php
-header('Content-Type: application/json; charset=utf-8');
 require 'functions.php';
 require 'database.php';
 include 'error_reporting.php';
@@ -15,11 +14,15 @@ try{
 
         //<editor-fold desc="POSTS">
         $postsXpage = 3;
-        // TODO SALTARE QUESTA QUERY SE SONO GIA' ENTRATO...
-        // Magari farlo con l'utilizzo di JWT
+
+        // TODO SALTARE QUESTA QUERY SE SONO GIA' ENTRATO..., Magari farlo con l'utilizzo di JWT
         $posts = $db->query("SELECT * FROM posts");
-        if ($posts->num_rows == 0)
-            throw new Exception('No recent posts', 200); // TODO va bene?
+        if ($posts->num_rows == 0){
+            //throw new Exception('No recent posts', 200);
+            header('HTTP/1.1 204 No Content');
+            exit;
+        }
+
 
         $numPagination = (int)ceil($posts->num_rows / $postsXpage);
 
@@ -52,7 +55,12 @@ try{
         //</editor-fold>
     }
 } catch (Exception | mysqli_sql_exception $e) {
-    JSONResponse($e->getMessage(), $e->getCode()); // TODO va bene?
+    // TODO va bene?
+    //JSONResponse($e->getMessage(), $e->getCode());
+    $e->getCode() === 401
+        ? header('Location: ../frontend/signin.html')
+        : header("HTTP/1.1 {$e->getCode()} {$e->getMessage()}");
+    exit;
 } finally {
     JSONResponse('Show Posts Successful', 200, $options);
 }

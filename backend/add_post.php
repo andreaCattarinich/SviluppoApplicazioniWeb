@@ -1,5 +1,4 @@
 <?php
-header('Content-Type: application/json');
 require 'functions.php';
 require 'database.php';
 include 'error_reporting.php';
@@ -16,18 +15,31 @@ try{
 
         $email = $jwtManager->getEmailFromToken($token);
 
-        //<editor-fold desc="ADD POST> Lato backend
+
         $fullname = $jwtManager->getFullnameFromToken($token);
-        //</editor-fold>
 
         $db = db_connect();
+        //<editor-fold desc="GET ROLE"> Lato backend
+        $stmt = $db->prepare("SELECT Role FROM users WHERE Email=?");
+        $stmt->bind_param('s', $email);
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+        $role = $result->fetch_assoc();
+        $role = $role['Role'];
+        //</editor-fold>
+
         $currentTime = time();
-        $stmt = $db->prepare("INSERT INTO posts (Fullname,Email,Role,Post,Date) VALUES (?,?,'Admin',?,$currentTime)");
+        $stmt = $db->prepare("INSERT INTO posts (Fullname,Email,Role,Post,Date) VALUES (?,?,'{$role}',?,$currentTime)");
         $stmt->bind_param('sss', $fullname, $email,$_POST['post']);
         $stmt->execute();
     }
 }catch (Exception | mysqli_sql_exception $e){
-    JSONResponse($e->getMessage(), $e->getCode());
+    //JSONResponse($e->getMessage(), $e->getCode());
+    header("HTTP/1.1 {$e->getCode()} {$e->getMessage()}");
+    exit;
 } finally {
-    JSONResponse('New Record Added Successfully', 201);
+    //JSONResponse('New Record Added Successfully', 201);
+    header('HTTP/1.1 201 New Record Added Successfully');
+    exit;
 }

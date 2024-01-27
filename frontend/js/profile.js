@@ -94,14 +94,22 @@ async function updateProfile(){
   try{
     let updateForm = document.getElementById("update-form");
     let data2Update = getDataFromForm(updateForm);
+
+    const token = getCookie('auth-token');
     const response = await fetch('../backend/update_profile.php', {
       method: 'POST',
+      headers: {
+        Authentication: `Bearer ${token}`,
+      },
       body: data2Update,
     })
 
-
     //throw new Error(`${response.status} ${response.statusText}`);
     if (!response.ok) throw new Error(`${response.statusText}`);
+
+    if(response.redirected){
+      window.location.href = response.url;
+    }
 
     const data = await response.json();
 
