@@ -1,14 +1,12 @@
-import {getCookie, getDataFromForm} from "./utils.js";
+import {getCookie} from "./utils.js";
 
 let searchForm;
 try {
     const navbar = await fetch(`navbarPersonal.html`);
-    const navbarHTML = await navbar.text();
-    document.getElementById('my_navbar').innerHTML = navbarHTML;
+    document.getElementById('my_navbar').innerHTML = await navbar.text();
 
     const footer = await fetch(`footer.html`);
-    const footerHTML = await footer.text();
-    document.getElementById('my_footer').innerHTML = footerHTML;
+    document.getElementById('my_footer').innerHTML = await footer.text();
 
     searchForm = document.getElementById('search-form');
     searchForm.addEventListener('submit', searchUsers);
@@ -23,15 +21,15 @@ async function searchUsers(event) {
     if(event) {
         event.preventDefault();
         try {
-            let search = getDataFromForm(searchForm);
+            let search = document.getElementById('search').value;
 
             const token = getCookie('auth-token');
-            const response = await fetch(`../backend/show_allUsers.php`, {
-                method: 'POST',
+            const response = await fetch(`../backend/show_users.php?search=${search}`, {
+                method: 'GET',
                 headers: {
                     Authentication: `Bearer ${token}`,
                 },
-                body: search,
+                //body: search,
             });
 
             //throw new Error(`${response.statusText}`);
@@ -127,7 +125,7 @@ function createTable(jsonData) {
 }
 
 function classColor(item) {
-    switch (item.Role) {
+    switch (item.role) {
         case 'Admin':
             return 'table-success';
         case 'Moderator':

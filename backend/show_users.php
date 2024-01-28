@@ -6,26 +6,22 @@ require  'auth.php';
 global $jwtManager;
 
 try{
-    if($_SERVER['REQUEST_METHOD'] !== 'POST')
+    if($_SERVER['REQUEST_METHOD'] !== 'GET')
         throw new Exception('Method Not Allowed', 405);
 
     if($token = admin()) {
-        if (empty($_POST['search']))
-            $inputSearch = '';
-            //throw new Exception('Bad Request', 400);
+        $search = '%' . ($_GET['search'] ?? '') . '%';
 
-        $inputSearch = validateInput($_POST['search']);
         $db = db_connect();
         $sql = "
-        SELECT Lastname,Firstname,Email,Role,Instagram
+        SELECT lastname,firstname,email,role,instagram 
         FROM users
-        WHERE Lastname LIKE ?
-        OR Firstname LIKE ?
-        OR Email LIKE ?
-        OR Role LIKE ?
-        OR Instagram LIKE ?;
-        ";
-        $search = $inputSearch . '%';
+        WHERE 
+        (lastname   LIKE ? OR
+         firstname  LIKE ? OR
+         email      LIKE ? OR
+         role       LIKE ? OR 
+         instagram  LIKE ?);";
 
         $stmt = $db->prepare($sql);
         $stmt->bind_param('sssss', $search, $search, $search, $search, $search);
@@ -37,12 +33,12 @@ try{
             exit;
         }
 
+        //$data = $result->fetch_all();
         $data = [];
-        while ($row = $result->fetch_assoc())
+        while($row = $result->fetch_assoc())
             $data[] = $row;
 
         $optional = [
-            'token'     => $token,
             'num_users' => $result->num_rows,
             'users'     => $data,
         ];

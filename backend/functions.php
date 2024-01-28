@@ -30,7 +30,7 @@ function validateInput($data): string{
 #[NoReturn]
 function JSONResponse($message, $status, $optional = array()): void{
     header('Content-Type: application/json');
-    //http_response_code($status);
+    http_response_code($status);
     $success = $status >= 200 && $status <= 299;
     $standard = array(
         'success' => $success,

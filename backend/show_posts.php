@@ -12,47 +12,39 @@ try{
     if($token = authorization()) {
         $db = db_connect();
 
-        //<editor-fold desc="POSTS">
         $postsXpage = 3;
+        $search = '%' . ($_GET['search'] ?? '') . '%';
 
-        // TODO SALTARE QUESTA QUERY SE SONO GIA' ENTRATO..., Magari farlo con l'utilizzo di JWT
-        $posts = $db->query("SELECT * FROM posts");
-        if ($posts->num_rows == 0){
-            //throw new Exception('No recent posts', 200);
-            header('HTTP/1.1 204 No Content');
-            exit;
-        }
+        // Prelevo dal DB il numero totale dei post
+        $stmt = $db->query("SELECT COUNT(*) FROM blog");
+        $total_number = (int)$stmt->fetch_assoc()['COUNT(*)'];
 
+        if($total_number == 0)
+            JSONResponse('No recent posts', 204);
+        $firstResult = ((int)$_GET['page'] - 1) * $postsXpage;
 
-        $numPagination = (int)ceil($posts->num_rows / $postsXpage);
+        $sql = "
+        SELECT blog.id AS id, CONCAT(users.firstname, ' ', users.lastname) AS fullname, role, content, created_at
+        FROM blog
+        LEFT JOIN users ON users.email = blog.user_email
+        WHERE
+        content LIKE ?
+        ORDER BY created_at DESC
+        LIMIT ?, $postsXpage;
+        ";
+        $stmt = $db->prepare($sql);
+        $stmt->bind_param('si',$search, $firstResult);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-        if ((int)$_GET['page'] <= 0)
-            $currentPage = 1;
-        else if ((int)$_GET['page'] >= $numPagination)
-            $currentPage = $numPagination;
-        else
-            $currentPage = (int)$_GET['page'];
-
-        $firstResult = ($currentPage - 1) * $postsXpage;
-
-        $showPosts = $db->query("SELECT * FROM posts ORDER BY date DESC LIMIT $firstResult , $postsXpage");
-        $data = [];
-        while ($row = $showPosts->fetch_assoc())
-            $data[] = $row;
-
-
-        $fullname = $jwtManager->getFullnameFromToken($token);
-        setcookie('Fullname', $fullname, $jwtManager->getExpireFromToken($token), '/');
+        $data = $result->fetch_all(MYSQLI_ASSOC);
 
         $options = [
-            'token' => $token,
-            'fullname' => $fullname,
             'posts' => $data,
-            'num_posts' => $posts->num_rows,
-            'num_pagination' => $numPagination,
-            'curr_page' => $currentPage
+            'num_posts' => $total_number,
+            'num_pagination' => ceil($total_number / $postsXpage),
+            'curr_page' => (int)$_GET['page'] // TODO eliminarla, tanto è ridondante
         ];
-        //</editor-fold>
     }
 } catch (Exception | mysqli_sql_exception $e) {
     // TODO va bene?

@@ -34,8 +34,8 @@ try{
 
     $hash = password_hash(trim($_POST['pass']), PASSWORD_DEFAULT);
     $db = db_connect();
-    $stmt = $db->prepare("INSERT INTO users (Firstname,Lastname,Email,Password) VALUES (?,?,?,?)");
-    $stmt->bind_param('ssss', $firstname, $lastname, $email, $hash);
+    $stmt = $db->prepare("INSERT INTO users (firstname,lastname,email,password) VALUES (?,?,?,?)");
+    $stmt->bind_param('ssss', $firstname,$lastname,$email,$hash);
     $stmt->execute();
 
 } catch(Exception | mysqli_sql_exception $e){

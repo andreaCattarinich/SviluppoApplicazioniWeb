@@ -23,7 +23,7 @@ function admin(){
         if ($token = authorization()) {
             $db = db_connect();
             $email = $jwtManager->getEmailFromToken($token);
-            $stmt = $db->prepare("SELECT Role FROM users WHERE Email=?");
+            $stmt = $db->prepare("SELECT role FROM users WHERE email=?");
             $stmt->bind_param('s', $email);
             $stmt->execute();
 
@@ -31,7 +31,7 @@ function admin(){
             if ($result->num_rows != 1)
                 throw new Exception('Unauthorized', 401);
             $role = $result->fetch_assoc();
-            if ($role['Role'] != 'Admin')
+            if ($role['role'] != 'Admin')
                 throw new Exception('Unauthorized', 401);
         }
     } catch (Exception | mysqli_sql_exception $e){
@@ -121,12 +121,12 @@ class JwtManager
     }
     public function getEmailFromToken($token){
         $data = $this->getTokenData($token);
-        return $data['Email'];
+        return $data['email'];
     }
     public function getFullnameFromToken($token): string
     {
         $data = $this->getTokenData($token);
-        return $data['Firstname'] . ' ' . $data['Lastname'];
+        return $data['firstname'] . ' ' . $data['lastname'];
     }
     public function getExpireFromToken($token)
     {

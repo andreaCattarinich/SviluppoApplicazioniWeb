@@ -13,16 +13,16 @@ try{
         $email = $jwtManager->getEmailFromToken($token);
 
         $db = db_connect();
-        $result = $db->query("SELECT * FROM users WHERE Email='$email'");
+        $result = $db->query("SELECT * FROM users WHERE email='$email'"); // TODO: serve il prepared Statement?
         if ($result->num_rows != 1)
             throw new Exception('Internal Server Error', 500);
 
         $row = $result->fetch_assoc();
         $optional = [
             'token'     => $token,
-            'firstname' => $row['Firstname'],
-            'lastname'  => $row['Lastname'],
-            'email'     => $row['Email'],
+            'firstname' => $row['firstname'],
+            'lastname'  => $row['lastname'],
+            'email'     => $row['email'],
             'instagram' => $row['Instagram'],
         ];
     }

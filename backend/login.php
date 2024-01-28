@@ -23,7 +23,7 @@ try{
     $password = trim($_POST['pass']);
 
     $db = db_connect();
-    $stmt = $db->prepare("SELECT * FROM users WHERE Email=?");
+    $stmt = $db->prepare("SELECT * FROM users WHERE email=?");
     $stmt->bind_param('s', $email);
     $stmt->execute();
 
@@ -32,19 +32,19 @@ try{
         throw new Exception('Email not found', 404);
 
     $row = $result->fetch_assoc();
-    if(!password_verify($password, $row['Password']))
+    if(!password_verify($password, $row['password']))
         throw new Exception('Unauthorized', 401);
 
     $data = [
-        'Firstname' => $row['Firstname'],
-        'Lastname' => $row['Lastname'],
-        'Email' => $row['Email'],
+        'firstname' => $row['firstname'],
+        'lastname' => $row['lastname'],
+        'email' => $row['email'],
     ];
 
     //<editor-fold desc="COOKIE>
     $delta = isset($_POST['rememberMe']) && $_POST['rememberMe'] == 'true'
         ? 60*60 // 1 hour
-        : 300;  // 5 minutes
+        : 600;  // 10 minutes
 
     $token = $jwtManager->createToken([
         'iss' => 'http://localhost',

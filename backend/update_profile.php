@@ -32,7 +32,7 @@ try{
         }
 
         $db = db_connect();
-        $stmt = $db->prepare("UPDATE users SET Firstname=?, Lastname=?, Instagram=? WHERE Email=?");
+        $stmt = $db->prepare("UPDATE users SET firstname=?, lastname=?, instagram=? WHERE email=?");
         $stmt->bind_param('ssss', $firstname, $lastname, $instagram, $email);
         $stmt->execute();
 

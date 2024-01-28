@@ -10,28 +10,26 @@ try{
         throw new Exception('Method Not Allowed', 405);
 
     if($token = authorization()) {
-        if (empty($_POST['post']))
+        if (empty($_POST['content']))
             throw new Exception('Bad Request', 400);
 
         $email = $jwtManager->getEmailFromToken($token);
 
-
-        $fullname = $jwtManager->getFullnameFromToken($token);
-
         $db = db_connect();
+
         //<editor-fold desc="GET ROLE"> Lato backend
-        $stmt = $db->prepare("SELECT Role FROM users WHERE Email=?");
+        $stmt = $db->prepare("SELECT role FROM users WHERE email=?");
         $stmt->bind_param('s', $email);
         $stmt->execute();
 
         $result = $stmt->get_result();
-        $role = $result->fetch_assoc();
-        $role = $role['Role'];
+        $role = $result->fetch_assoc()['role'];
         //</editor-fold>
 
-        $currentTime = time();
-        $stmt = $db->prepare("INSERT INTO posts (Fullname,Email,Role,Post,Date) VALUES (?,?,'{$role}',?,$currentTime)");
-        $stmt->bind_param('sss', $fullname, $email,$_POST['post']);
+        $stmt = $db->prepare("
+            INSERT INTO blog (user_email,content)
+            VALUES (?,?)");
+        $stmt->bind_param('ss',$email,$_POST['content']);
         $stmt->execute();
     }
 }catch (Exception | mysqli_sql_exception $e){

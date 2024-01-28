@@ -1,4 +1,4 @@
-import {getCookie, timeConverter} from "./utils.js";
+import { getCookie } from "./utils.js";
 
 document.addEventListener("DOMContentLoaded", loadPage(1));
 document.getElementById('pagination').addEventListener('click', loadAnotherPage);
@@ -21,8 +21,10 @@ async function loadPage(page){
             window.location.href = response.url;
         }
 
-        if (response.status === 204)
+        if (response.status === 204){
             document.getElementById('title').innerText = 'No Recent Posts';
+            return;
+        }
 
         const data = await response.json();
         console.log(data);
@@ -39,20 +41,20 @@ async function loadPage(page){
 
             let cardTitle = document.createElement('h5');
             cardTitle.classList.add('card-title');
-            cardTitle.innerText = data.posts[i].Fullname
+            cardTitle.innerText = data.posts[i].fullname;
 
             let cardSubtitle = document.createElement('span');
             //cardSubtitle.classList.add('card-subtitle', 'mb-2', 'text-body-secondary', 'badge', 'text-bg-success');
             cardSubtitle.classList.add('card-subtitle', 'mb-2', 'badge', classColor(data.posts[i]));
-            cardSubtitle.innerHTML = data.posts[i].Role;
+            cardSubtitle.innerHTML = data.posts[i].role;
 
             let time = document.createElement('p');
             let small = document.createElement('small');
-            small.innerText = timeConverter(data.posts[i].Date);
+            small.innerText = data.posts[i].created_at;
             time.appendChild(small);
 
             let contentPost = document.createElement('div');
-            contentPost.innerHTML = data.posts[i].Post;
+            contentPost.innerHTML = data.posts[i].content;
 
             postDiv.appendChild(bodyDiv);
             bodyDiv.appendChild(cardTitle);
@@ -141,7 +143,7 @@ async function addPost(event){
     try{
         let content = tinymce.get("myTextarea").getContent({format: 'html'});
         const formData = new FormData();
-        formData.append('post', content);
+        formData.append('content', content);
 
         const token = getCookie('auth-token');
         const response = await fetch('../backend/add_post.php', {
@@ -164,7 +166,7 @@ async function addPost(event){
 }
 
 function classColor(item) {
-    switch (item.Role) {
+    switch (item.role) {
         case 'Admin':
             return 'text-bg-success';
         case 'Moderator':
