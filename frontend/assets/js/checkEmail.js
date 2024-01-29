@@ -1,5 +1,3 @@
-//import {handleError} from "./utils.js";
-
 async function checkEmail(){
     try {
         let email = document.getElementById('email').value;

@@ -10,10 +10,10 @@ try{
         throw new Exception('Method Not Allowed', 405);
 
     $token = authorization();
-    $email = $jwtManager->getEmailFromToken($token);
+    $user_id = $jwtManager->getUserIDFromToken($token);
 
     $db = db_connect();
-    $result = $db->query("SELECT * FROM users WHERE email='$email'");
+    $result = $db->query("SELECT * FROM users WHERE user_id='$user_id'");
 
     // TODO: non serve perché email è UNIQUE
     if ($result->num_rows != 1) throw new Exception('Internal Server Error', 500);

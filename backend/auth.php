@@ -22,9 +22,9 @@ function admin(){
     try {
         $token = authorization();
         $db = db_connect();
-        $email = $jwtManager->getEmailFromToken($token);
-        $stmt = $db->prepare("SELECT role FROM users WHERE email=?");
-        $stmt->bind_param('s', $email);
+        $user_id = $jwtManager->getUserIDFromToken($token);
+        $stmt = $db->prepare("SELECT role FROM users WHERE user_id=?");
+        $stmt->bind_param('i', $user_id);
         $stmt->execute();
 
         $result = $stmt->get_result();
@@ -47,9 +47,9 @@ function moderator(){
     try {
         $token = authorization();
         $db = db_connect();
-        $email = $jwtManager->getEmailFromToken($token);
-        $stmt = $db->prepare("SELECT role FROM users WHERE email=?");
-        $stmt->bind_param('s', $email);
+        $user_id = $jwtManager->getUserIDFromToken($token);
+        $stmt = $db->prepare("SELECT role FROM users WHERE user_id=?");
+        $stmt->bind_param('i', $user_id);
         $stmt->execute();
 
         $result = $stmt->get_result();
@@ -138,6 +138,11 @@ class JwtManager
     {
         $payload = $this->getTokenPayload($token);
         return $payload['exp'] > time();
+    }
+    public function getUserIDFromToken($token): int
+    {
+        $payload = $this->getTokenPayload($token);
+        return $payload['user_id'];
     }
     public function getEmailFromToken($token){
         $data = $this->getTokenData($token);

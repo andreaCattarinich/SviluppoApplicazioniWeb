@@ -13,13 +13,13 @@ try{
     if (empty($_POST['content']))
         throw new Exception('Bad Request', 400);
 
-    $email = $jwtManager->getEmailFromToken($token);
+    $user_id = $jwtManager->getUserIDFromToken($token);
 
     $db = db_connect();
 
     //<editor-fold desc="GET ROLE"> Lato backend
-    $stmt = $db->prepare("SELECT role FROM users WHERE email=?");
-    $stmt->bind_param('s', $email);
+    $stmt = $db->prepare("SELECT role FROM users WHERE user_id=?");
+    $stmt->bind_param('i', $user_id);
     $stmt->execute();
 
     $result = $stmt->get_result();

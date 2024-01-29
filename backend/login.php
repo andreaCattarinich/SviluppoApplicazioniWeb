@@ -37,8 +37,8 @@ try{
 
     $data = [
         'firstname' => $row['firstname'],
-        'lastname' => $row['lastname'],
-        'email' => $row['email'],
+        'lastname'  => $row['lastname'],
+        'email'     => $row['email'],
     ];
 
     //<editor-fold desc="COOKIE>
@@ -47,10 +47,11 @@ try{
         : 1200;  // 20 minutes
 
     $token = $jwtManager->createToken([
-        'iss' => 'http://localhost',
-        'iat' => time(),
-        'exp' => time() + $delta,
-        'data' => $data,
+        'iss'       => 'http://localhost',
+        'iat'       => time(),
+        'exp'       => time() + $delta,
+        'user_id'   => $row['user_id'],
+        'data'      => $data,
     ]);
 
     setcookie('auth-token', $token, time()+$delta, '/');

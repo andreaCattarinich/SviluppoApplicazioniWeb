@@ -59,8 +59,8 @@ function loadLandingPage(){
   createShowField('firstname');
   createShowField('lastname');
   createShowField('email');
+  document.getElementById('check-email').classList.add('d-none');
   createShowField('instagram');
-  document.getElementById('email-advise').classList.add('d-none');
 
   loadData();
   
@@ -79,6 +79,8 @@ function loadEditMode(){
   createInputField('firstname');
   createInputField('lastname');
   createInputField('email');
+  let emailCheck = document.getElementById('email');
+  emailCheck.addEventListener('input', checkEmail);
   createInputField('instagram');
 
   // MODIFICO BOTTONE (EDIT -> UPDATE)
@@ -114,7 +116,8 @@ async function updateProfile(){
 
     const data = await response.json();
 
-    if (!response.ok) throw new Error(`${response.status} ${data.message}`);
+    //if (!response.ok) throw new Error(`${response.status} ${data.message}`);
+    if (!response.ok) throw new Error(`${data.message}`);
 
     firstname = data.firstname;
     lastname = data.lastname;
@@ -153,7 +156,6 @@ function createInputField(field) {
   switch(field){
     case 'email':
       inputField.type = 'email';
-      document.getElementById('email-advise').classList.remove('d-none');
       //inputField.classList.add("text-bg-secondary","text-dark", "bg-opacity-25");
       //inputField.readOnly = true;
     break;

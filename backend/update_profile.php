@@ -23,7 +23,7 @@ try{
     $firstname  = validateInput($_POST['firstname']);
     $lastname   = validateInput($_POST['lastname']);
     $new_email  = strtolower(validateInput($_POST['email']));
-    $old_email  = $jwtManager->getEmailFromToken($token); // TODO: fare con userID
+    $user_id  = $jwtManager->getUserIDFromToken($token); // TODO: fare con userID
 
     if(isset($_POST['instagram']) && validateUsername($_POST['instagram']))
         $instagram = validateInput($_POST['instagram']);
@@ -31,28 +31,12 @@ try{
         $instagram = null;
 
     $db = db_connect();
-    $stmt = $db->prepare("UPDATE users SET firstname=?, lastname=?, email=?, instagram=? WHERE email=?");
-    $stmt->bind_param('sssss', $firstname, $lastname, $new_email, $instagram, $old_email);
+    $stmt = $db->prepare("UPDATE users SET firstname=?, lastname=?, email=?, instagram=? WHERE user_id=?");
+    $stmt->bind_param('ssssi', $firstname, $lastname, $new_email, $instagram, $user_id);
     $stmt->execute();
 
     if($stmt->affected_rows == 0)
         throw new Exception('Nothing changed', 200);
-
-    if($new_email != $old_email){
-        // TODO: fare con userID
-        $token = $jwtManager->createToken([
-            'iss' => 'http://localhost',
-            'iat' => time(),
-            'exp' => time() + 1200, // 20 minutes
-            'data' => [
-                'firstname' => $firstname,
-                'lastname' => $lastname,
-                'email' => $new_email,
-            ],
-        ]);
-
-        setcookie('auth-token', $token, time()+1200, '/');
-    }
 
     if ($stmt->affected_rows == 1) {
         $options = [
@@ -65,7 +49,9 @@ try{
     }
 
 } catch (mysqli_sql_exception $e){
-    JSONResponse('Internal Server Error', 500);
+    $e->getCode() == 1062
+        ? JSONResponse('Email Already Registered', 409)
+        : JSONResponse('Internal Server Error', 500);
 } catch (Exception $e) {
     JSONResponse($e->getMessage(), $e->getCode());
 }
