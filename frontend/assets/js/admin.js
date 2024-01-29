@@ -1,12 +1,9 @@
-import {getCookie} from "./utils.js";
+import {getCookie, includeFooter, includeNavbar} from "./utils.js";
 
 let searchForm;
 try {
-    const navbar = await fetch(`navbarPersonal.html`);
-    document.getElementById('my_navbar').innerHTML = await navbar.text();
-
-    const footer = await fetch(`footer.html`);
-    document.getElementById('my_footer').innerHTML = await footer.text();
+    await includeNavbar('navbarPersonal.html');
+    await includeFooter('footer.html');
 
     searchForm = document.getElementById('search-form');
     searchForm.addEventListener('submit', searchUsers);
@@ -29,23 +26,17 @@ async function searchUsers(event) {
                 headers: {
                     Authentication: `Bearer ${token}`,
                 },
-                //body: search,
             });
 
-            //throw new Error(`${response.statusText}`);
-            if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
+            const data = await response.json();
 
-            if (response.redirected) {
-                window.location.href = response.url;
-            }
+            if (!response.ok) throw new Error(`${response.status} ${data.message}`);
 
             if (response.status === 204) {
                 let table = document.getElementById("table");
                 table.innerHTML = '';
                 document.getElementById('title').innerText = 'No Data';
-            } else {
-                // console.log(data);
-                const data = await response.json();
+            }else{
                 createTable(data.users);
             }
         } catch (error) {
@@ -55,9 +46,9 @@ async function searchUsers(event) {
 }
 
 let STDroleButton =
-    '    <div className="input-group">\n' +
-    '        <button id="button0" className="btn btn-outline-secondary" type="button">ok</button>\n' +
-    '        <select className="form-select" id="input0" aria-label="Example select with button addon">\n' +
+    '    <div class="input-group">\n' +
+    '        <button id="button0" class="btn btn-success" type="button">Change</button>\n' +
+    '        <select class="form-select" id="input0" aria-label="Example select with button addon">\n' +
     '            <option selected="">Current</option>\n' +
     '            <option value="1">Admin</option>\n' +
     '            <option value="2">Moderator</option>\n' +
@@ -98,8 +89,8 @@ function createTable(jsonData) {
         tr.classList.add(classColor(item));
         let th = document.createElement("th");
         th.scope = "row";
-        th.innerText = counter; // Set the value as the text of the table cell
-        tr.appendChild(th); // Append the table cell to the table row
+        th.innerText = counter.toString();
+        tr.appendChild(th);
 
         // Get the values of the current object in the JSON data
         let vals = Object.values(item);
@@ -109,8 +100,8 @@ function createTable(jsonData) {
             let td = document.createElement("td");
             if(role === 3) {
                 let roleButton = STDroleButton;
-                roleButton = roleButton.replace(/0/g, counter);
-                roleButton = roleButton.replace('Current', elem);
+                roleButton = roleButton.replace(/0/g, counter.toString());
+                roleButton = roleButton.replace('Current', elem.toString());
                 td.innerHTML = roleButton;
             }else{
                 td.innerText = elem;
@@ -140,7 +131,7 @@ function classColor(item) {
 }
 
 async function clickButton(event){
-    if(event.target.tagName === 'BUTTON'){
+    if(event.target.tagName === 'BUTTON' && event.target.textContent === 'Change'){
         let button = event.target.id;
         try{
             let select = button.replace('button', 'input');
@@ -162,8 +153,9 @@ async function clickButton(event){
                 body: formData,
             });
 
-            //throw new Error(`${response.status} ${response.statusText}`);
-            if (!response.ok) throw new Error(`${response.statusText}`);
+            const data = await response.json();
+
+            if (!response.ok) throw new Error(`${response.status} ${data.message}`);
 
             if(response.redirected){
                 window.location.href = response.url;

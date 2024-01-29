@@ -31,15 +31,9 @@ function validateInput($data): string{
 function JSONResponse($message, $status, $optional = array()): void{
     header('Content-Type: application/json');
     http_response_code($status);
-    $success = $status >= 200 && $status <= 299;
-    $standard = array(
-        'success' => $success,
-        'code'    => $status,
-        'message' => $success ? $message : null,
-        'error'   => !$success ? $message : null
-    );
-    if(!empty($optional))
-        $standard = array_merge($standard, $optional);
-    echo json_encode($standard);
+    echo json_encode(array_merge(
+        ['message' => $message],
+        $optional
+    ));
     exit;
 }

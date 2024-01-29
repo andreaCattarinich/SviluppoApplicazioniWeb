@@ -53,7 +53,6 @@ try{
         'data' => $data,
     ]);
 
-    // TODO l'orario è corretto? Non ho ritardi?
     setcookie('auth-token', $token, time()+$delta, '/');
     //</editor-fold>
 
@@ -61,14 +60,10 @@ try{
         'token'     => $token,
         'data'      => $data,
     ];
-} catch (Exception | mysqli_sql_exception $e){
-    //JSONResponse('Unauthorized', 401);
-    //JSONResponse($e->getMessage(), $e->getCode());
-    //JSONResponse($e->getMessage(), 500);
-    header('HTTP/1.1 401 Unauthorized');
-    exit;
-} finally {
-    //JSONResponse('Login Successful', 200, $options);
-    header('Location: ../frontend/profile.html');
-    exit;
+
+    JSONResponse('Login Successfully', 200);
+} catch (mysqli_sql_exception $e){
+    JSONResponse('Internal Server Error', 500);
+} catch (Exception $e){
+    JSONResponse($e->getMessage(), $e->getCode());
 }

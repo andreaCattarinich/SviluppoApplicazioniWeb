@@ -20,30 +20,50 @@ function authorization(){
 function admin(){
     global $jwtManager;
     try {
-        if ($token = authorization()) {
-            $db = db_connect();
-            $email = $jwtManager->getEmailFromToken($token);
-            $stmt = $db->prepare("SELECT role FROM users WHERE email=?");
-            $stmt->bind_param('s', $email);
-            $stmt->execute();
+        $token = authorization();
+        $db = db_connect();
+        $email = $jwtManager->getEmailFromToken($token);
+        $stmt = $db->prepare("SELECT role FROM users WHERE email=?");
+        $stmt->bind_param('s', $email);
+        $stmt->execute();
 
-            $result = $stmt->get_result();
-            if ($result->num_rows != 1)
-                throw new Exception('Unauthorized', 401);
-            $role = $result->fetch_assoc();
-            if ($role['role'] != 'Admin')
-                throw new Exception('Unauthorized', 401);
-        }
-    } catch (Exception | mysqli_sql_exception $e){
-        if($e->getCode() === 401)
-            header('Location: ../frontend/signin.html');
-        else if($e->getCode() >= 500)
-            header('HTTP/1.1 500 Internal Server Error');
-        else
-            header("HTTP/1.1 {$e->getCode()} {$e->getMessage()}");
-        exit;
-    } finally {
+        $result = $stmt->get_result();
+        if ($result->num_rows != 1)
+            throw new Exception('Unauthorized', 401);
+        $role = $result->fetch_assoc();
+        if ($role['role'] != 'Admin')
+            throw new Exception('Forbidden', 403);
+
         return $token;
+    } catch (mysqli_sql_exception $e){
+        JSONResponse('Internal Server Error', 500);
+    } catch (Exception $e) {
+        JSONResponse($e->getMessage(), $e->getCode());
+    }
+}
+
+function moderator(){
+    global $jwtManager;
+    try {
+        $token = authorization();
+        $db = db_connect();
+        $email = $jwtManager->getEmailFromToken($token);
+        $stmt = $db->prepare("SELECT role FROM users WHERE email=?");
+        $stmt->bind_param('s', $email);
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+        if ($result->num_rows != 1)
+            throw new Exception('Unauthorized', 401);
+        $role = $result->fetch_assoc();
+        if ($role['role'] == 'Moderator' || $role['role'] == 'Admin')
+            return $token;
+        else
+            throw new Exception('Only Moderators Can Add Posts', 403);
+    } catch (mysqli_sql_exception $e){
+        JSONResponse('Internal Server Error', 500);
+    } catch (Exception $e) {
+        JSONResponse($e->getMessage(), $e->getCode());
     }
 }
 

@@ -1,8 +1,16 @@
-import { getCookie } from "./utils.js";
+import {getCookie, handleError, includeFooter, includeNavbar} from "./utils.js";
 
-document.addEventListener("DOMContentLoaded", loadPage(1));
-document.getElementById('pagination').addEventListener('click', loadAnotherPage);
-document.getElementById("add-button").addEventListener("click", addPost);
+try{
+    await includeNavbar('navbarPersonal.html');
+    await includeFooter('footer.html');
+
+    document.addEventListener("DOMContentLoaded", loadPage(1));
+    document.getElementById('pagination').addEventListener('click', loadAnotherPage);
+    document.getElementById("add-button").addEventListener("click", addPost);
+} catch (error){
+    console.log(error);
+}
+
 
 async function loadPage(page){
     try {
@@ -14,20 +22,14 @@ async function loadPage(page){
            },
         });
 
-        //throw new Error(`${response.statusText}`);
-        if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
+        const data = await response.json();
 
-        if(response.redirected){
-            window.location.href = response.url;
-        }
+        if (!response.ok) throw new Error(`${response.status} ${data.message}`);
 
         if (response.status === 204){
             document.getElementById('title').innerText = 'No Recent Posts';
             return;
         }
-
-        const data = await response.json();
-        console.log(data);
 
         let posts = document.getElementById("posts");
         posts.innerHTML = '';
@@ -92,6 +94,7 @@ function loadPagination(currentPage, numPagination){
 
     //<editor-fold desc="PREVIOUS">
     let li = document.createElement('li');
+    li.classList.add("page-item");
     currentPage === 1 ? li.classList.add('disabled') : null;
     let a = document.createElement('a');
     a.classList.add("page-link");
@@ -151,17 +154,17 @@ async function addPost(event){
             headers: {
                 Authentication: `Bearer ${token}`,
             },
-            //body: JSON.stringify({post : content}),
             body: formData,
         });
 
-        // if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
-        if (!response.ok) throw new Error(`${response.statusText}`);
+        const data = await response.json();
+
+        if (!response.ok) throw new Error(`${response.status} ${data.message}`);
 
         location.reload();
-        //window.location.href = "blog.html";
     } catch (error){
-        window.location.href = 'signin.html';
+        console.log(error);
+        handleErrorBlog()
     }
 }
 
@@ -178,4 +181,9 @@ function classColor(item) {
         default:
             return 'text-bg-dark';
     }
+}
+
+function handleErrorBlog() {
+    let div = document.getElementById('info');
+    div.classList.remove('d-none');
 }

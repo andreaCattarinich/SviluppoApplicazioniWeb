@@ -1,9 +1,16 @@
-import { getCookie, getDataFromForm } from "./utils.js";
+import {getCookie, getDataFromForm, includeFooter, includeNavbar} from "./utils.js";
 
 let firstname, lastname, email, instagram;
-
 document.addEventListener('DOMContentLoaded', showProfile);
 document.addEventListener('click', clickButton);
+
+try{
+  await includeNavbar('navbarPersonal.html');
+  await includeFooter('footer.html');
+
+} catch (error){
+  console.log(error);
+}
 
 async function showProfile(event){
   event.preventDefault();
@@ -16,17 +23,19 @@ async function showProfile(event){
       },
     });
 
-    if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
-
     const data = await response.json();
+
+    if (!response.ok) throw new Error(`${response.status} ${data.message}`);
 
     firstname = data.firstname;
     lastname = data.lastname;
     email = data.email;
     instagram = data.instagram;
-    loadData(); // TODO: passare data come parametro e gestire tutto dalla funzione
+
+    // TODO: passare data come parametro e gestire tutto dalla funzione
+    loadData();
   } catch (error){
-    window.location.href = 'signin.html';
+    console.log(error);
   }
 }
 
@@ -104,14 +113,9 @@ async function updateProfile(){
       body: data2Update,
     })
 
-    //throw new Error(`${response.status} ${response.statusText}`);
-    if (!response.ok) throw new Error(`${response.statusText}`);
-
-    if(response.redirected){
-      window.location.href = response.url;
-    }
-
     const data = await response.json();
+
+    if (!response.ok) throw new Error(`${response.status} ${data.message}`);
 
     firstname = data.firstname;
     lastname = data.lastname;

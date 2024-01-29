@@ -1,95 +1,99 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Remote Sensing</title>
 
-    <link href="assets/brand/satelite.png" rel="icon" />
-    <link href="assets/dist/css/bootstrap.min.css" rel="stylesheet">
-  </head>
 
-  <body>
-    <div id="my_navbar"></div>
+  <link href="assets/brand/satelite.png" rel="icon" />
+<!-- TODO: cancellare   <link href="assets/dist/css/bootstrap.min.css" rel="stylesheet">-->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <title>Remote Sensing</title>
+</head>
+<body>
+  <div id="navbar"></div>
 
-    <main>
-      <section class="py-5 text-center container">
-        <div class="row py-lg-5">
-          <div class="col-lg-6 col-md-8 mx-auto">
-            <h1 class="fw-light">Remote Sensing</h1>
-            <h1 class="fw-light">Digital Image Analysis</h1>
-            <p class="lead text-body-secondary">Remote sensing is the science of obtaining information about objects or areas from a distance, typically from aircraft or satellites.</p>
-            <p>
-              <a href="signin.html" class="btn btn-primary btn-lg">Sign-In</a>
-              <a href="signup.html" class="btn btn-secondary btn-lg">Sign-Up</a>
-            </p>
-          </div>
+  <main>
+    <section class="py-5 text-center container">
+      <div class="row py-lg-5">
+        <div class="col-lg-6 col-md-8 mx-auto">
+          <h1 class="fw-light">Remote Sensing</h1>
+          <h1 class="fw-light">Digital Image Analysis</h1>
+          <p class="lead text-body-secondary">Remote sensing is the science of obtaining information about objects or areas from a distance, typically from aircraft or satellites.</p>
+          <p>
+            <a href="signin.html" class="btn btn-primary btn-lg">Sign-In</a>
+            <a href="signup.html" class="btn btn-secondary btn-lg">Sign-Up</a>
+          </p>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <div class="album py-5 bg-body-tertiary">
-        <div class="container">
-          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-            <div class="col">
-              <div class="card shadow-sm">
-                <!-- TODO: controllare come inserire le immagini correttamente -->
-                <!-- <img src="img/Genoa.jpg" class="bd-placeholder-img card-img-top" width="100%" height="225" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false" alt="Placeholder"> -->
-                <img src="img/vulcano_islanda.jpg" class="img-thumbnail" alt="Genoa from above">
-                <!-- <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"/><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg> -->
-                <div class="card-body">
-                  <p class="card-text">When a volcano erupts, satellites can help us detect and track volcanic gas emissions, changes in ground deformation as well as volcanic ash plumes.</p>
-                  <div class="d-flex justify-content-between align-items-center">
-                    <div class="btn-group">
-                      <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                      <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                    </div>
-                    <small class="text-body-secondary">9 mins</small>
+    <div class="album py-5 bg-body-tertiary">
+      <div class="container">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+          <div class="col">
+            <div class="card shadow-sm">
+              <!-- TODO: controllare come inserire le immagini correttamente -->
+              <!-- <img src="assets/img/Genoa.jpg" class="bd-placeholder-img card-img-top" width="100%" height="225" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false" alt="Placeholder"> -->
+              <img src="assets/img/vulcano_islanda.jpg" class="img-thumbnail" alt="Islanda vulcano's eruption">
+              <!-- <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"/><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg> -->
+              <div class="card-body">
+                <p class="card-text">When a volcano erupts, satellites can help us detect and track volcanic gas emissions, changes in ground deformation as well as volcanic ash plumes.</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
                   </div>
+                  <small class="text-body-secondary">9 mins</small>
                 </div>
               </div>
             </div>
-            <div class="col">
-              <div class="card shadow-sm">
-                <img src="img/remotesensing.jpg" class="img-thumbnail" alt="Genoa from above">
-                <!-- <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"/><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg> -->
-                <div class="card-body">
-                  <p class="card-text">Remote sensing uses the properties of electromagnetic waves emitted, reflected or diffracted from Earth to space to create data that can be used to improve natural resources management and land use and to protect the environment.</p>
-                  <div class="d-flex justify-content-between align-items-center">
-                    <div class="btn-group">
-                      <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                      <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                    </div>
-                    <small class="text-body-secondary">9 mins</small>
+          </div>
+          <div class="col">
+            <div class="card shadow-sm">
+              <img src="assets/img/remotesensing.jpg" class="img-thumbnail" alt="What is Remote Sensing">
+              <!-- <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"/><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg> -->
+              <div class="card-body">
+                <p class="card-text">Remote sensing uses the properties of electromagnetic waves emitted, reflected or diffracted from Earth to space to create data that can be used to improve natural resources management and land use and to protect the environment.</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
                   </div>
+                  <small class="text-body-secondary">9 mins</small>
                 </div>
               </div>
             </div>
-            <div class="col">
-              <div class="card shadow-sm">
-                <img src="img/lima_peru.jpg" class="img-thumbnail" alt="Genoa from above">
-                <!-- <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"/><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg> -->
-                <div class="card-body">
-                  <p class="card-text">This Copernicus Sentinel-2 image takes us to Lima, the capital and largest city of Peru.</p>
-                  <div class="d-flex justify-content-between align-items-center">
-                    <div class="btn-group">
-                      <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                      <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                    </div>
-                    <small class="text-body-secondary">9 mins</small>
+          </div>
+          <div class="col">
+            <div class="card shadow-sm">
+              <img src="assets/img/lima_peru.jpg" class="img-thumbnail" alt="Copernicus Image Perù">
+              <!-- <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"/><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg> -->
+              <div class="card-body">
+                <p class="card-text">This Copernicus Sentinel-2 image takes us to Lima, the capital and largest city of Peru.</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
                   </div>
+                  <small class="text-body-secondary">9 mins</small>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
 
-    </main>
+  </main>
 
-    <div id="my_footer"></div>
-    
-    <script src="assets/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/navbarHome.js"></script>
-  </body>
+  <div id="footer"></div>
+
+  <!-- TODO: cancellare -->
+<!--    <script src="assets/dist/js/bootstrap.bundle.min.js"></script>-->
+<!--    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>-->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+  <script src="assets/js/index.js" type="module"></script>
+</body>
 </html>
