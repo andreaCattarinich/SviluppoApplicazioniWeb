@@ -3,6 +3,7 @@ require 'functions.php';
 require 'database.php';
 include 'error_reporting.php';
 require  'auth.php';
+global $jwtManager;
 
 try{
     if($_SERVER['REQUEST_METHOD'] !== 'POST')
@@ -21,29 +22,43 @@ try{
 
     $firstname  = validateInput($_POST['firstname']);
     $lastname   = validateInput($_POST['lastname']);
-    $email      = strtolower(validateInput($_POST['email']));
+    $new_email  = strtolower(validateInput($_POST['email']));
+    $old_email  = $jwtManager->getEmailFromToken($token); // TODO: fare con userID
 
-    // TODO Gestisco variabile aggiuntiva al progetto: va bene?
     if(isset($_POST['instagram']) && validateUsername($_POST['instagram']))
         $instagram = validateInput($_POST['instagram']);
-    else{
+    else
         $instagram = null;
-        //throw new Exception('Invalid Parameters', 400);
-    }
 
     $db = db_connect();
-    $stmt = $db->prepare("UPDATE users SET firstname=?, lastname=?, instagram=? WHERE email=?");
-    $stmt->bind_param('ssss', $firstname, $lastname, $instagram, $email);
+    $stmt = $db->prepare("UPDATE users SET firstname=?, lastname=?, email=?, instagram=? WHERE email=?");
+    $stmt->bind_param('sssss', $firstname, $lastname, $new_email, $instagram, $old_email);
     $stmt->execute();
 
     if($stmt->affected_rows == 0)
-        throw new Exception('Nothing changed', 304);
+        throw new Exception('Nothing changed', 200);
+
+    if($new_email != $old_email){
+        // TODO: fare con userID
+        $token = $jwtManager->createToken([
+            'iss' => 'http://localhost',
+            'iat' => time(),
+            'exp' => time() + 1200, // 20 minutes
+            'data' => [
+                'firstname' => $firstname,
+                'lastname' => $lastname,
+                'email' => $new_email,
+            ],
+        ]);
+
+        setcookie('auth-token', $token, time()+1200, '/');
+    }
 
     if ($stmt->affected_rows == 1) {
         $options = [
             'firstname' => $firstname,
             'lastname' => $lastname,
-            'email' => $email,
+            'email' => $new_email,
             'instagram' => $instagram,
         ];
         JSONResponse('Update Successful', 200, $options);

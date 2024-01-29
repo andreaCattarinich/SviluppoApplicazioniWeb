@@ -44,7 +44,7 @@ try{
     //<editor-fold desc="COOKIE>
     $delta = isset($_POST['rememberMe']) && $_POST['rememberMe'] == 'true'
         ? 60*60 // 1 hour
-        : 600;  // 10 minutes
+        : 1200;  // 20 minutes
 
     $token = $jwtManager->createToken([
         'iss' => 'http://localhost',

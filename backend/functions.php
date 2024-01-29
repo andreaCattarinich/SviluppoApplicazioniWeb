@@ -14,10 +14,12 @@ function validatePassword($password): false|int{
     $regex = '/.*/s'; // TODO: scegliere la regexpr
     return preg_match($regex, htmlspecialchars($password));
 }
-
-// TODO: valutare se togliere questa funzione
 function validateUsername($username): false|int{
-    $regex = "/^[A-Za-z0-9._]{0,28}$/"; // TODO: Accetate anche una stringa vuota
+    /* Aggiuntiva:
+     *  Accetta stringhe che contengono caratteri alfabetici,
+     *  numeri, punti e underscore
+    */
+    $regex = "/^[A-Za-z0-9._]{0,28}$/";
     return preg_match($regex, htmlspecialchars($username));
 }
 

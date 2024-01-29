@@ -32,7 +32,7 @@ async function searchUsers(event) {
 
             if (!response.ok) throw new Error(`${response.status} ${data.message}`);
 
-            if (response.status === 204) {
+            if (response.status === 200 && data.message === 'No recent posts') {
                 let table = document.getElementById("table");
                 table.innerHTML = '';
                 document.getElementById('title').innerText = 'No Data';

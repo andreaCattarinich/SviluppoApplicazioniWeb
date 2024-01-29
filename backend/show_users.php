@@ -29,7 +29,7 @@ try{
 
     $result = $stmt->get_result();
     if ($result->num_rows == 0)
-        JSONResponse('No recent posts', 204);
+        JSONResponse('No recent posts', 200);
 
     $data = [];
     while($row = $result->fetch_assoc())

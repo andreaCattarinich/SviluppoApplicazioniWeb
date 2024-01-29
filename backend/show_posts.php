@@ -43,7 +43,7 @@ try{
         'posts' => $data,
         'num_posts' => $total_number,
         'num_pagination' => ceil($total_number / $postsXpage),
-        'curr_page' => (int)$_GET['page'] // TODO eliminarla, tanto è ridondante
+        'curr_page' => (int)$_GET['page'] // Ridondante
     ];
     JSONResponse('Show Posts Successful', 200, $options);
 } catch (mysqli_sql_exception $e){

@@ -10,8 +10,8 @@
 </head>
 <body class="bg-body-tertiary">
     <div id="navbar"></div>
-    <div class="container">
-        <main class="form-signin w-100 m-auto">
+    <div class="container" style="max-width: 600px;">
+        <main>
             <div class="py-5 text-center">
                 <img class="d-block mx-auto mb-4" src="assets/brand/computer-logo.svg" alt="" width="72" height="57">
                 <h2 id="title">Login form</h2>
@@ -20,21 +20,18 @@
 
             <h4 class="mb-3">Credentials</h4>
 
-            <!-- TODO: Controllare il form -->
             <form id="login" method="post">
                 <div class="row g-3">
                     <div class="col-12">
                       <label for="email" class="form-label">Email</label>
-                      <div class="input-group has-validation">
+                      <div class="input-group">
                         <input type="email" class="form-control" id="email" name="email" placeholder="name@domain.com" value="" required>
-                      <div class="invalid-feedback">Your email is required.</div>
                       </div>
                     </div>
 
                     <div class="col-sm-12">
                       <label for="pass" class="form-label">Password</label>
                       <input type="password" class="form-control" id="pass" name="pass" placeholder="Enter your password" value="" required>
-                      <div class="invalid-feedback">Password is required.</div>
                     </div>
 
                     <div class="col-sm-12">

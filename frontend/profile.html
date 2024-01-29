@@ -25,7 +25,7 @@
   <main>
     <section style="background-color: #CDD9E6;">
       <div class="container py-5">
-        <!-- TODO: Controllare il form -->
+
         <form id="update-form" action="../backend/update_profile.php" method="post">
           <div class="row">
             <div class="col-lg-4">
@@ -42,8 +42,6 @@
                 <div class="card-body p-0">
                   <ul class="list-group list-group-flush rounded-3">
                     <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                      <!-- TODO: add icons with API -->
-                      <!-- <i class="fas fa-globe fa-lg text-warning"></i> -->
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-browser-chrome me-4" viewBox="0 0 16 16">
                         <path fill-rule="evenodd" d="M16 8a8.001 8.001 0 0 1-7.022 7.94l1.902-7.098a2.995 2.995 0 0 0 .05-1.492A2.977 2.977 0 0 0 10.237 6h5.511A8 8 0 0 1 16 8M0 8a8 8 0 0 0 7.927 8l1.426-5.321a2.978 2.978 0 0 1-.723.255 2.979 2.979 0 0 1-1.743-.147 2.986 2.986 0 0 1-1.043-.7L.633 4.876A7.975 7.975 0 0 0 0 8m5.004-.167L1.108 3.936A8.003 8.003 0 0 1 15.418 5H8.066a2.979 2.979 0 0 0-1.252.243 2.987 2.987 0 0 0-1.81 2.59ZM8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4"/>
                       </svg>
@@ -82,46 +80,59 @@
                 <div class="card-body">
                   <div class="row">
                     <div class="col-sm-3">
-                      <p class="mb-0">Firstname</p>
+                      <p class="mb-0"><strong>Firstname</strong></p>
                     </div>
                     <div class="col-sm-9">
-                      <p id="show_firstname" class="text-muted mb-0"></p>
+                      <p id="show_firstname" class="mb-0"><strong></strong></p>
                     </div>
                   </div>
                   <hr>
                   <div class="row">
                     <div class="col-sm-3">
-                      <p class="mb-0">Lastname</p>
+                      <p class="mb-0"><strong>Lastname</strong></p>
                     </div>
                     <div class="col-sm-9">
-                      <p id="show_lastname" class="text-muted mb-0"></p>
+                      <p id="show_lastname" class="mb-0"></p>
                     </div>
                   </div>
                   <hr>
                   <div class="row">
                     <div class="col-sm-3">
-                      <p class="mb-0">Email</p>
+                      <p class="mb-0"><strong>Email</strong></p>
                     </div>
                     <div class="col-sm-9">
-                      <p id="show_email" class="text-muted mb-0"></p>
+                      <p id="show_email" class="mb-0"></p>
+                      <p id="email-advise" class="d-none text-danger" style="margin-bottom: 0;">
+                        <small>You can change email only one time.</small>
+                      </p>
                     </div>
                   </div>
                   <hr>
                   <div class="row">
                     <div class="col-sm-3">
-                      <p class="mb-0">Phone</p>
+                      <p class="mb-0"><strong>Role</strong></p>
                     </div>
                     <div class="col-sm-9">
-                      <p id="phone" class="text-muted mb-0">(+39) 123-4567890</p>
+                      <span id="show_role" class="card-subtitle mb-0 badge"></span>
+                      <p style="margin-bottom: 0;"><small>To change your role, contact the administrator.</small></p>
                     </div>
                   </div>
                   <hr>
                   <div class="row">
                     <div class="col-sm-3">
-                      <p class="mb-0">Address</p>
+                      <p class="mb-0"><strong>Phone</strong></p>
                     </div>
                     <div class="col-sm-9">
-                      <p id="address" class="text-muted mb-0">Genoa, Italy</p>
+                      <p id="phone" class="mb-0">(+39) 123-4567890</p>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0"><strong>Address</strong></p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p id="address" class="mb-0">Genoa, Italy</p>
                     </div>
                   </div>
                 </div>

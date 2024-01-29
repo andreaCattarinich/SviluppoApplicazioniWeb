@@ -17,7 +17,6 @@ try{
 
     $db = db_connect();
 
-    // TODO: fare funzione getRoleByEmail()
     //<editor-fold desc="GET ROLE"> Lato backend
     $stmt = $db->prepare("SELECT role FROM users WHERE email=?");
     $stmt->bind_param('s', $email);

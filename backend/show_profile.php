@@ -24,7 +24,8 @@ try{
         'firstname' => $row['firstname'],
         'lastname'  => $row['lastname'],
         'email'     => $row['email'],
-        'instagram' => $row['instagram'], // TODO: instagram è nullo, che valore metto di default
+        'instagram' => $row['instagram'],
+        'role' => $row['role'],
     ];
 
     JSONResponse('Show Profile Successful', 200, $optional);
