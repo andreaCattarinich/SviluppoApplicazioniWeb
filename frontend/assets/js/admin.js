@@ -16,7 +16,12 @@ try {
     else window.location.href = 'index.html';
 
     await loadUsers();
-    document.getElementById("search").addEventListener('input', await loadUsers());
+
+    document.getElementById("search").addEventListener('input', async function searchUsers(){
+        //let search = document.getElementById('search').value;
+        await loadUsers();
+    });
+
     document.addEventListener('click', clickButton);
 } catch (error) {
     console.log(error);
@@ -43,6 +48,7 @@ async function loadUsers() {
             table.innerHTML = '';
             document.getElementById('title').innerText = 'No Data';
         }else{
+            document.getElementById('title').innerText = 'Users';
             createTable(data.users);
         }
     } catch (error) {
