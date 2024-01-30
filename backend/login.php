@@ -37,6 +37,9 @@ try{
     if(!password_verify($password, $row['password']))
         throw new Exception('Unauthorized', 401);
 
+    if($row['role'] == 'Blocked')
+        throw new Exception('Unauthorized', 401);
+
     $data = [
         'firstname' => $row['firstname'],
         'lastname'  => $row['lastname'],
