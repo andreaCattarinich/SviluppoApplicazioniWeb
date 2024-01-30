@@ -1,21 +1,15 @@
 <?php
-function db_connect(): mysqli{
-    // TODO: togliere le credenziali da qui
-    //<editor-fold desc="XAMPP">
-    $servername = "localhost";
-    $user = "root";
-    $db_passw = "";
-    $db_name = "saw";
-    //</editor-fold>
+require 'DB_config.php';
 
-    //<editor-fold desc="SAW">
-//    $servername = "localhost";
-//    $user = "S5137057";
-//    $db_passw = "NonTiDicoLaPassword";
-//    $db_name = "S5137057";
-    //</editor-fold>
+function db_connect(): mysqli{
     try{
-        return new mysqli($servername, $user, $db_passw, $db_name);
+        $db = getDBConfig();
+        $hostname = $db['hostname'];
+        $username = $db['username'];
+        $password = $db['password'];
+        $database = $db['database'];
+
+        return new mysqli($hostname, $username, $password, $database);
     }catch (mysqli_sql_exception $e){
         JSONResponse('Internal Server Error', 500);
     }catch (Exception $e){

@@ -17,7 +17,7 @@ function authorization(){
 /******** CONTROLLO AUTORIZZAZIONE E RUOLO **********
  * @throws Exception
  */
-function admin(){
+function isAdmin(){
     global $jwtManager;
     try {
         $token = authorization();
@@ -42,7 +42,7 @@ function admin(){
     }
 }
 
-function moderator(){
+function isModerator(){
     global $jwtManager;
     try {
         $token = authorization();

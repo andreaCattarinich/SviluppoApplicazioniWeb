@@ -1,11 +1,15 @@
-import {getDataFromForm, handleError, includeFooter, includeNavbar} from './utils.js';
+import {getCookie, getDataFromForm, handleError, includeFooter, includeNavbar} from './utils.js';
+import {FOOTER, NAVBAR_HOMEPAGE} from "./constants.js";
+
+if(getCookie('auth-token'))
+  window.location.href = 'blog.html';
 
 let loginForm = document.getElementById("login");
 loginForm.addEventListener("submit", login);
 
 try{
-  await includeNavbar('navbarHomepage.html');
-  await includeFooter('footer.html');
+  await includeNavbar(NAVBAR_HOMEPAGE);
+  await includeFooter(FOOTER);
 
   const urlParams = new URLSearchParams(window.location.search);
   const myParam = urlParams.get('success');
@@ -33,7 +37,6 @@ async function login(event){
       if(response.status === 500) throw new Error(`Service Temporarily Unavailable`);
       else throw new Error(`Check your credentials`);
     }
-
 
     window.location.href = 'profile.html';
 

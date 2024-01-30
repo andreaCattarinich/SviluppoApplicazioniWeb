@@ -1,4 +1,5 @@
-<?php 
+<?php
+// TODO cancellare questo file
 error_reporting(E_ALL);
 ini_set("display_error", 1);
 

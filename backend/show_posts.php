@@ -1,4 +1,5 @@
 <?php
+require 'constants.php';
 require 'functions.php';
 require 'database.php';
 include 'error_reporting.php';
@@ -12,26 +13,30 @@ try{
     $token = authorization();
     $db = db_connect();
 
-    $postsXpage = 3;
     $search = '%' . ($_GET['search'] ?? '') . '%';
 
-    // Prelevo dal DB il numero totale dei post
-    $stmt = $db->query("SELECT COUNT(*) FROM blog");
-    $total_number = (int)$stmt->fetch_assoc()['COUNT(*)'];
+    // Prelevo dal DB il numero dei post (totali oppure cercati in base al campo search)
+    $stmt = $db->prepare("SELECT COUNT(*) FROM blog WHERE content LIKE ?");
+    $stmt->bind_param('s', $search);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-    if($total_number == 0)
-        JSONResponse('No recent posts', 204);
-    $firstResult = ((int)$_GET['page'] - 1) * $postsXpage;
+    $total_number = (int)$result->fetch_assoc()['COUNT(*)'];
+
+    if($total_number == 0) // TODO: non mettere 200
+        JSONResponse('No posts found', 200, ['posts' => '']);
+
+    $firstResult = ((int)$_GET['page'] - 1) * POSTS_PER_PAGE;
 
     $sql = "
     SELECT blog.post_id AS id, CONCAT(users.firstname, ' ', users.lastname) AS fullname, role, content, created_at
     FROM blog
-    LEFT JOIN users ON users.email = blog.user_email
+    LEFT JOIN users ON users.user_id = blog.user_id
     WHERE
     content LIKE ?
     ORDER BY created_at DESC
-    LIMIT ?, $postsXpage;
-    ";
+    LIMIT ?," . POSTS_PER_PAGE;
+
     $stmt = $db->prepare($sql);
     $stmt->bind_param('si',$search, $firstResult);
     $stmt->execute();
@@ -42,7 +47,7 @@ try{
     $options = [
         'posts' => $data,
         'num_posts' => $total_number,
-        'num_pagination' => ceil($total_number / $postsXpage),
+        'num_pagination' => ceil($total_number / POSTS_PER_PAGE),
         'curr_page' => (int)$_GET['page'] // Ridondante
     ];
     JSONResponse('Show Posts Successful', 200, $options);

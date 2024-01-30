@@ -9,7 +9,7 @@ try{
     if($_SERVER['REQUEST_METHOD'] !== 'GET')
         throw new Exception('Method Not Allowed', 405);
 
-    $token = admin();
+    $token = isAdmin();
     $search = '%' . ($_GET['search'] ?? '') . '%';
 
     $db = db_connect();
@@ -28,7 +28,7 @@ try{
     $stmt->execute();
 
     $result = $stmt->get_result();
-    if ($result->num_rows == 0)
+    if ($result->num_rows == 0) // TODO: 200?
         JSONResponse('No recent posts', 200);
 
     $data = [];

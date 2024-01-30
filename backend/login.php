@@ -1,4 +1,5 @@
 <?php
+require 'constants.php';
 require 'functions.php';
 require 'database.php';
 include 'error_reporting.php';
@@ -22,6 +23,7 @@ try{
     $email = strtolower(validateInput($_POST['email']));
     $password = trim($_POST['pass']);
 
+    // TODO: ho già il PHP in check_email. Eventualmente ri-utilizzarlo
     $db = db_connect();
     $stmt = $db->prepare("SELECT * FROM users WHERE email=?");
     $stmt->bind_param('s', $email);
@@ -29,7 +31,7 @@ try{
 
     $result = $stmt->get_result();
     if($result->num_rows == 0)
-        throw new Exception('Email not found', 404);
+        throw new Exception('Email not found', 401);
 
     $row = $result->fetch_assoc();
     if(!password_verify($password, $row['password']))
@@ -41,21 +43,21 @@ try{
         'email'     => $row['email'],
     ];
 
-    //<editor-fold desc="COOKIE>
     $delta = isset($_POST['rememberMe']) && $_POST['rememberMe'] == 'true'
-        ? 60*60 // 1 hour
-        : 1200;  // 20 minutes
+        ? JWT_TTL
+        : JWT_REMEMBERME;
+
+    $currentTime = time();
 
     $token = $jwtManager->createToken([
-        'iss'       => 'http://localhost',
-        'iat'       => time(),
-        'exp'       => time() + $delta,
+        'iat'       => $currentTime,
+        'exp'       => $currentTime + $delta,
         'user_id'   => $row['user_id'],
+        'role'      => $row['role'],
         'data'      => $data,
     ]);
 
-    setcookie('auth-token', $token, time()+$delta, '/');
-    //</editor-fold>
+    setcookie('auth-token', $token, $currentTime + $delta, '/');
 
     $options = [
         'token'     => $token,

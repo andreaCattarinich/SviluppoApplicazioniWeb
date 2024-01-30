@@ -9,27 +9,17 @@ try{
     if($_SERVER['REQUEST_METHOD'] !== 'POST')
         throw new Exception('Method Not Allowed', 405);
 
-    $token = moderator();
+    $token = isModerator();
     if (empty($_POST['content']))
         throw new Exception('Bad Request', 400);
 
     $user_id = $jwtManager->getUserIDFromToken($token);
 
     $db = db_connect();
-
-    //<editor-fold desc="GET ROLE"> Lato backend
-    $stmt = $db->prepare("SELECT role FROM users WHERE user_id=?");
-    $stmt->bind_param('i', $user_id);
-    $stmt->execute();
-
-    $result = $stmt->get_result();
-    $role = $result->fetch_assoc()['role'];
-    //</editor-fold>
-
     $stmt = $db->prepare("
-        INSERT INTO blog (user_email,content)
+        INSERT INTO blog (user_id,content)
         VALUES (?,?)");
-    $stmt->bind_param('ss',$email,$_POST['content']);
+    $stmt->bind_param('is',$user_id,$_POST['content']);
     $stmt->execute();
 
     JSONResponse('Post Added Successfully', 201);

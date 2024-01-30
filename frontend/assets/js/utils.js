@@ -1,3 +1,5 @@
+import {FOOTER, NAVBAR_ADMIN, NAVBAR_VIEWER} from "./constants.js";
+
 /************** INCLUDE ******************/
 export async function includeNavbar(navbarPath){
   const response = await fetch(navbarPath);
@@ -25,7 +27,7 @@ export function getDataFromForm(nameForm){
   return data;
 }
 
-export function handleError(error, code = null){
+export function handleError(error){
   // If I want to manage codes error, use code parameter
   let title = document.getElementById("title");
   let subtitle = document.getElementById("subtitle");  
@@ -41,4 +43,35 @@ export function getCookie(name) {
   const parts = value.split(`; ${name}=`);
   if (parts.length === 2)
     return parts.pop().split(';').shift();
+}
+
+function parseJwt (token) {
+  let base64Url = token.split('.')[1];
+  let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  let jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+  }).join(''));
+
+  return JSON.parse(jsonPayload);
+}
+
+export function isLogged(){
+  if(!getCookie('auth-token'))
+    window.location.href = 'signin.html';
+}
+
+export function isAdmin(){
+  let token = getCookie('auth-token');
+  let payload = parseJwt(token);
+  return payload['role'] === 'Admin';
+}
+
+export async function startPage() {
+  isLogged();
+  if (isAdmin())
+    await includeNavbar(NAVBAR_ADMIN);
+  else
+    await includeNavbar(NAVBAR_VIEWER);
+
+  await includeFooter(FOOTER);
 }

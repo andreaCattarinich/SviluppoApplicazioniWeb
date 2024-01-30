@@ -1,13 +1,12 @@
-import {getCookie, getDataFromForm, includeFooter, includeNavbar} from "./utils.js";
+import {getCookie, getDataFromForm, startPage} from "./utils.js";
+
+await startPage();
 
 let firstname, lastname, email, instagram, role;
-document.addEventListener('DOMContentLoaded', showProfile);
+await showProfile();
 document.addEventListener('click', clickButton);
-await includeNavbar('navbarPersonal.html');
-await includeFooter('footer.html');
 
-async function showProfile(event){
-  event.preventDefault();
+async function showProfile(){
   try{
     const token = getCookie('auth-token');
     const response = await fetch('../backend/show_profile.php', {
@@ -28,10 +27,6 @@ async function showProfile(event){
     role = data.role;
 
     loadData();
-
-    if(role === 'Admin') await includeNavbar('navbarAdmin.html');
-    else await includeNavbar('navbarPersonal.html');
-
   } catch (error){
     console.log(error);
   }
@@ -217,9 +212,11 @@ function loadData(){
   instagramVisual.textContent = "@" + instagram;
   instagramVisual.href = "https://www.instagram.com/" + instagram;
 
-  let roleVisual = document.getElementById("show_role");
-  roleVisual.textContent = role;
-  roleVisual.classList.add(classColor(role.toString()));
+  let span = document.getElementById("show_role");
+  span.textContent = role;
+  span.classList.add(classColor(role.toString()));
+  if(role.toString() === 'Admin')
+    span.innerHTML = '<a href="admin.html" class="text-white">Admin</a>';
 }
 function classColor(role) {
   switch (role) {
@@ -227,7 +224,7 @@ function classColor(role) {
       return 'text-bg-success';
     case 'Moderator':
       return 'text-bg-primary';
-    case 'Editor':
+    case 'Viewer':
       return 'text-bg-warning';
     case 'Blocked':
       return 'text-bg-danger';

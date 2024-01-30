@@ -20,8 +20,8 @@ try {
             throw new Exception('Bad Request', 400);
     }
 
-    if (!validateName($_POST['firstname']) || !validateName($_POST['lastname']) ||
-        !validateEmail($_POST['email']) || !validatePassword($_POST['pass'])) {
+    if (!validateName($_POST['firstname'])  || !validateName($_POST['lastname']) ||
+        !validateEmail($_POST['email'])     || !validatePassword($_POST['pass'])) {
         throw new Exception('Invalid Parameters', 400);
     }
 

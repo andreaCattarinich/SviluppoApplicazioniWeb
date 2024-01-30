@@ -23,8 +23,9 @@ try{
     $firstname  = validateInput($_POST['firstname']);
     $lastname   = validateInput($_POST['lastname']);
     $new_email  = strtolower(validateInput($_POST['email']));
-    $user_id  = $jwtManager->getUserIDFromToken($token); // TODO: fare con userID
+    $user_id  = $jwtManager->getUserIDFromToken($token);
 
+    // Variabile aggiuntiva al progetto
     if(isset($_POST['instagram']) && validateUsername($_POST['instagram']))
         $instagram = validateInput($_POST['instagram']);
     else
@@ -35,18 +36,18 @@ try{
     $stmt->bind_param('ssssi', $firstname, $lastname, $new_email, $instagram, $user_id);
     $stmt->execute();
 
-    if($stmt->affected_rows == 0)
-        throw new Exception('Nothing changed', 200);
+    $options = [
+        'firstname' => $firstname,
+        'lastname' => $lastname,
+        'email' => $new_email,
+        'instagram' => $instagram,
+    ];
 
-    if ($stmt->affected_rows == 1) {
-        $options = [
-            'firstname' => $firstname,
-            'lastname' => $lastname,
-            'email' => $new_email,
-            'instagram' => $instagram,
-        ];
+    if($stmt->affected_rows == 0)   // TODO: sarebbe meglio utilizzare 304 Not Modified, ma non funziona lato JS
+        JSONResponse('Nothing changed', 200, $options);
+
+    if ($stmt->affected_rows == 1)
         JSONResponse('Update Successful', 200, $options);
-    }
 
 } catch (mysqli_sql_exception $e){
     $e->getCode() == 1062

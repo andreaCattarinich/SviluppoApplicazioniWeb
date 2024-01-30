@@ -1,11 +1,12 @@
 import {getDataFromForm, handleError, includeFooter, includeNavbar} from './utils.js';
+import {FOOTER, NAVBAR_HOMEPAGE} from "./constants.js";
 
 let registrationForm = document.getElementById("registration");
 registrationForm.addEventListener("submit", registration);
 
 try{
-  await includeNavbar('navbarHomepage.html');
-  await includeFooter('footer.html');
+  await includeNavbar(NAVBAR_HOMEPAGE);
+  await includeFooter(FOOTER);
 
 } catch (error){
   console.log(error);

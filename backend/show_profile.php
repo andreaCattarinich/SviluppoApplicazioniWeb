@@ -15,8 +15,7 @@ try{
     $db = db_connect();
     $result = $db->query("SELECT * FROM users WHERE user_id='$user_id'");
 
-    // TODO: non serve perché email è UNIQUE
-    if ($result->num_rows != 1) throw new Exception('Internal Server Error', 500);
+    if ($result->num_rows > 1) throw new Exception('Internal Server Error', 500);
 
     $row = $result->fetch_assoc();
     $optional = [
@@ -25,7 +24,7 @@ try{
         'lastname'  => $row['lastname'],
         'email'     => $row['email'],
         'instagram' => $row['instagram'],
-        'role' => $row['role'],
+        'role'      => $row['role'],
     ];
 
     JSONResponse('Show Profile Successful', 200, $optional);

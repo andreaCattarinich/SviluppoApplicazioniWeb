@@ -2,6 +2,7 @@
 use JetBrains\PhpStorm\NoReturn;
 
 function validateName($name): false|int{
+    // TODO: aggiungere commento
     $regex = "/^[\p{L}'\s]*\p{L}[\p{L}'\s]*$/u";
     return preg_match($regex, htmlspecialchars($name));
 }
@@ -11,7 +12,15 @@ function validateEmail($email){
 }
 
 function validatePassword($password): false|int{
-    $regex = '/.*/s'; // TODO: scegliere la regexpr
+    /* Password must contain at least 1 number, 1 capital and 1 lower letter
+    if( strlen($password) <= 0 ||
+        !preg_match('#[0-9]+#',$password) ||
+        !preg_match("#[A-Z]+#",$password) ||
+        !preg_match("#[a-z]+#",$password) ){
+        return false;
+    }
+    */
+    $regex = '/.*/s'; // Regex che accetta tutti i caratteri
     return preg_match($regex, htmlspecialchars($password));
 }
 function validateUsername($username): false|int{
@@ -25,7 +34,6 @@ function validateUsername($username): false|int{
 
 function validateInput($data): string{
     $data = trim($data);
-    $data = stripslashes($data);
     return htmlspecialchars($data);
 }
 

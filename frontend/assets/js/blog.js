@@ -1,21 +1,24 @@
-import {getCookie, handleError, includeFooter, includeNavbar} from "./utils.js";
+import {getCookie, startPage} from "./utils.js";
 
 try{
-    await includeNavbar('navbarPersonal.html');
-    await includeFooter('footer.html');
+    await startPage();
 
-    document.addEventListener("DOMContentLoaded", loadPage(1));
+    await loadPage(1);
     document.getElementById('pagination').addEventListener('click', loadAnotherPage);
-    document.getElementById("add-button").addEventListener("click", addPost);
+    document.getElementById("add-button").addEventListener('click', addPost);
+    document.getElementById("search").addEventListener('input', async function searchPost(){
+        let search = document.getElementById('search').value;
+        await loadPage(1, search);
+    });
+
 } catch (error){
     console.log(error);
 }
 
-
-async function loadPage(page){
+async function loadPage(page, search = ''){
     try {
         const token = getCookie('auth-token');
-        const response = await fetch(`../backend/show_posts.php?page=${page}`, {
+        const response = await fetch(`../backend/show_posts.php?page=${page}&search=${search}`, {
            method: 'GET',
            headers: {
                Authentication: `Bearer ${token}`,
@@ -26,46 +29,57 @@ async function loadPage(page){
 
         if (!response.ok) throw new Error(`${response.status} ${data.message}`);
 
-        if (response.status === 204){
-            document.getElementById('title').innerText = 'No Recent Posts';
-            return;
+        // IF ANY POST
+        if(data.posts){
+            // PRINT THEM
+            document.getElementById('title').innerText = 'Recent Posts';
+            let posts = document.getElementById("posts");
+            posts.innerHTML = '';
+
+            // PRINT POST ONE BY ONE
+            for (let i = 0; i < data.posts.length; i++) {
+                let postDiv = document.createElement("div");
+                postDiv.classList.add('card', 'my-4', 'ms-4');
+
+                let bodyDiv = document.createElement('div');
+                bodyDiv.classList.add('card-body');
+
+                let cardTitle = document.createElement('h5');
+                cardTitle.classList.add('card-title');
+                cardTitle.innerText = data.posts[i].fullname;
+
+                let cardSubtitle = document.createElement('span');
+                //cardSubtitle.classList.add('card-subtitle', 'mb-2', 'text-body-secondary', 'badge', 'text-bg-success');
+                cardSubtitle.classList.add('card-subtitle', 'mb-2', 'badge', classColor(data.posts[i]));
+                cardSubtitle.innerHTML = data.posts[i].role;
+
+                let time = document.createElement('p');
+                let small = document.createElement('small');
+                small.innerText = data.posts[i].created_at;
+                time.appendChild(small);
+
+                let contentPost = document.createElement('div');
+                contentPost.innerHTML = data.posts[i].content;
+
+                postDiv.appendChild(bodyDiv);
+                bodyDiv.appendChild(cardTitle);
+                bodyDiv.appendChild(cardSubtitle);
+                bodyDiv.appendChild(time);
+                bodyDiv.appendChild(contentPost);
+                posts.appendChild(postDiv);
+            }
+
+            // LOAD PAGINATION
+            loadPagination(page, data.num_pagination);
+        }else{
+            // ELSE SHOW MESSAGE
+            document.getElementById('title').innerText = data.message;
+            let posts = document.getElementById("posts");
+            posts.innerHTML = '';
+            if(document.getElementById('pagination'))
+                document.getElementById('pagination').innerHTML = '';
         }
 
-        let posts = document.getElementById("posts");
-        posts.innerHTML = '';
-
-        for (let i = 0; i < data.posts.length; i++) {
-            let postDiv = document.createElement("div");
-            postDiv.classList.add('card', 'my-4', 'ms-4');
-
-            let bodyDiv = document.createElement('div');
-            bodyDiv.classList.add('card-body');
-
-            let cardTitle = document.createElement('h5');
-            cardTitle.classList.add('card-title');
-            cardTitle.innerText = data.posts[i].fullname;
-
-            let cardSubtitle = document.createElement('span');
-            //cardSubtitle.classList.add('card-subtitle', 'mb-2', 'text-body-secondary', 'badge', 'text-bg-success');
-            cardSubtitle.classList.add('card-subtitle', 'mb-2', 'badge', classColor(data.posts[i]));
-            cardSubtitle.innerHTML = data.posts[i].role;
-
-            let time = document.createElement('p');
-            let small = document.createElement('small');
-            small.innerText = data.posts[i].created_at;
-            time.appendChild(small);
-
-            let contentPost = document.createElement('div');
-            contentPost.innerHTML = data.posts[i].content;
-
-            postDiv.appendChild(bodyDiv);
-            bodyDiv.appendChild(cardTitle);
-            bodyDiv.appendChild(cardSubtitle);
-            bodyDiv.appendChild(time);
-            bodyDiv.appendChild(contentPost);
-            posts.appendChild(postDiv);
-        }
-        loadPagination(page, data.num_pagination);
     }catch (error){
         console.log(error);
     }
@@ -84,7 +98,7 @@ function loadAnotherPage(event) {
     }else{
       newPage = parseInt(event.target.innerText);
     }
-    loadPage(newPage);
+    loadPage(newPage, document.getElementById('search').value);
   }
 }
 
@@ -174,7 +188,7 @@ function classColor(item) {
             return 'text-bg-success';
         case 'Moderator':
             return 'text-bg-primary';
-        case 'Editor':
+        case 'Viewer':
             return 'text-bg-warning';
         case 'Blocked':
             return 'text-bg-danger';
