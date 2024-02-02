@@ -29,8 +29,8 @@ try{
     $stmt->bind_param('ss', $_POST['Role'], $_POST['Email']);
     $stmt->execute();
 
-    if($stmt->affected_rows == 0) // TODO: no exception for 200
-        throw new Exception('Nothing changed', 200);
+    if($stmt->affected_rows == 0) // TODO: sarebbe meglio 304
+        JSONResponse('Nothing changed', 200);
 
     if ($stmt->affected_rows != 1)
         throw new Exception('Internal Server Error', 500);

@@ -19,7 +19,7 @@ try{
 
     $row = $result->fetch_assoc();
     $optional = [
-        'token'     => $token,
+        //'token'     => $token,
         'firstname' => $row['firstname'],
         'lastname'  => $row['lastname'],
         'email'     => $row['email'],

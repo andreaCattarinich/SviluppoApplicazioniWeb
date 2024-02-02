@@ -28,8 +28,8 @@ try{
     $stmt->execute();
 
     $result = $stmt->get_result();
-    if ($result->num_rows == 0) // TODO: 200?
-        JSONResponse('No recent posts', 200);
+    if ($result->num_rows == 0) // TODO: sarebbe meglio 404
+        JSONResponse('No users', 200, ['users' => '']);
 
     $data = [];
     while($row = $result->fetch_assoc())

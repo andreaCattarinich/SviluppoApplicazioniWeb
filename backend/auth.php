@@ -21,8 +21,16 @@ function isAdmin(){
     global $jwtManager;
     try {
         $token = authorization();
-        $db = db_connect();
         $user_id = $jwtManager->getUserIDFromToken($token);
+
+        /* TODO: modificare e prelevare il ruolo dal JWT
+        $role = $jwtManager->getRoleByToken($token);
+        if($role != 'Admin')
+            throw new Exception('Unauthorized', 401);
+
+        return $token;
+        */
+        $db = db_connect();
         $stmt = $db->prepare("SELECT role FROM users WHERE user_id=?");
         $stmt->bind_param('i', $user_id);
         $stmt->execute();
@@ -144,6 +152,14 @@ class JwtManager
         $payload = $this->getTokenPayload($token);
         return $payload['user_id'];
     }
+
+    public function getRoleByToken($token): string
+    {
+        $payload = $this->getTokenPayload($token);
+        $role = $payload['role'];
+        return $role;
+    }
+
     public function getEmailFromToken($token){
         $data = $this->getTokenData($token);
         return $data['email'];

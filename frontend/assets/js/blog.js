@@ -1,7 +1,12 @@
-import {getCookie, startPage} from "./utils.js";
+import {getCookie, startPage, parseJwt} from "./utils.js";
 
 try{
     await startPage();
+
+    let payload = parseJwt(getCookie('auth-token'));
+    //console.log(payload);
+    document.getElementById('user').innerText =
+        payload.data.firstname + ' ' + payload.data.lastname + ' - ' + payload.role ;
 
     await loadPage(1);
     document.getElementById('pagination').addEventListener('click', loadAnotherPage);

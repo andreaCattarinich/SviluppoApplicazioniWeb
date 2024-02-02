@@ -2,8 +2,13 @@
 use JetBrains\PhpStorm\NoReturn;
 
 function validateName($name): false|int{
-    // TODO: aggiungere commento
     $regex = "/^[\p{L}'\s]*\p{L}[\p{L}'\s]*$/u";
+    // ^            inizio stringa
+    // \p{L}        caratteri Unicode
+    // '            apostrofi
+    // \s           spazi
+    // $            fine stringa
+    // /u           UTF-8
     return preg_match($regex, htmlspecialchars($name));
 }
 
@@ -20,7 +25,7 @@ function validatePassword($password): false|int{
         return false;
     }
     */
-    $regex = '/.*/s'; // Regex che accetta tutti i caratteri
+    $regex = '/.*/s'; // Accetta tutti i caratteri
     return preg_match($regex, htmlspecialchars($password));
 }
 function validateUsername($username): false|int{
@@ -33,8 +38,7 @@ function validateUsername($username): false|int{
 }
 
 function validateInput($data): string{
-    $data = trim($data);
-    return htmlspecialchars($data);
+    return htmlspecialchars(trim($data));
 }
 
 #[NoReturn]

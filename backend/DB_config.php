@@ -14,6 +14,3 @@ function getDBConfig(): array{
 //        'database' => 'S5137057',
 //    ];
 }
-
-// TODO: show_users.php -> riga32 togliere
-// TODO: perché su iPhone non funziona show_profile?

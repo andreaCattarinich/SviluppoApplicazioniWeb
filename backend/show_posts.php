@@ -23,7 +23,7 @@ try{
 
     $total_number = (int)$result->fetch_assoc()['COUNT(*)'];
 
-    if($total_number == 0) // TODO: non mettere 200
+    if($total_number == 0) // TODO: sarebbe meglio 404
         JSONResponse('No posts found', 200, ['posts' => '']);
 
     $firstResult = ((int)$_GET['page'] - 1) * POSTS_PER_PAGE;
@@ -48,7 +48,7 @@ try{
         'posts' => $data,
         'num_posts' => $total_number,
         'num_pagination' => ceil($total_number / POSTS_PER_PAGE),
-        'curr_page' => (int)$_GET['page'] // Ridondante
+        'curr_page' => (int)$_GET['page'] // TODO: ridondante
     ];
     JSONResponse('Show Posts Successful', 200, $options);
 } catch (mysqli_sql_exception $e){

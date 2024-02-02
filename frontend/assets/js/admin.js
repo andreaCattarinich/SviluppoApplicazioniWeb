@@ -18,8 +18,8 @@ try {
     await loadUsers();
 
     document.getElementById("search").addEventListener('input', async function searchUsers(){
-        //let search = document.getElementById('search').value;
-        await loadUsers();
+        let search = document.getElementById('search').value;
+        await loadUsers(search);
     });
 
     document.addEventListener('click', clickButton);
@@ -27,10 +27,8 @@ try {
     console.log(error);
 }
 
-async function loadUsers() {
+async function loadUsers(search = '') {
     try {
-        let search = document.getElementById('search').value;
-
         const token = getCookie('auth-token');
         const response = await fetch(`../backend/show_users.php?search=${search}`, {
             method: 'GET',
@@ -43,7 +41,7 @@ async function loadUsers() {
 
         if (!response.ok) throw new Error(`${response.status} ${data.message}`);
 
-        if (response.status === 200 && data.message === 'No recent posts') {
+        if (!data.users) {
             let table = document.getElementById("table");
             table.innerHTML = '';
             document.getElementById('title').innerText = 'No Data';

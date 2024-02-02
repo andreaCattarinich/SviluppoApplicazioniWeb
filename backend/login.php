@@ -23,9 +23,8 @@ try{
     $email = strtolower(validateInput($_POST['email']));
     $password = trim($_POST['pass']);
 
-    // TODO: ho già il PHP in check_email. Eventualmente ri-utilizzarlo
     $db = db_connect();
-    $stmt = $db->prepare("SELECT * FROM users WHERE email=?");
+    $stmt = $db->prepare("SELECT * FROM users WHERE email=?"); // TODO: AND role!='Blocked'
     $stmt->bind_param('s', $email);
     $stmt->execute();
 
@@ -34,10 +33,11 @@ try{
         throw new Exception('Email not found', 401);
 
     $row = $result->fetch_assoc();
-    if(!password_verify($password, $row['password']))
-        throw new Exception('Unauthorized', 401);
 
     if($row['role'] == 'Blocked')
+        throw new Exception('Unauthorized', 401);
+
+    if(!password_verify($password, $row['password']))
         throw new Exception('Unauthorized', 401);
 
     $data = [
