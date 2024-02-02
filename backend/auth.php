@@ -21,6 +21,7 @@ function isAdmin(){
     global $jwtManager;
     try {
         $token = authorization();
+
         $user_id = $jwtManager->getUserIDFromToken($token);
 
         /* TODO: modificare e prelevare il ruolo dal JWT
